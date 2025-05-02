@@ -6,17 +6,9 @@ C:\Users\jonat\source\repos\ParchisCliente\Dependencies\include\SFML\System\Exce
       C:\Users\jonat\source\repos\ParchisCliente\Dependencies\include\SFML\System\Exception.hpp(41,23):
       vea la declaración de 'sf::Exception'
   
-  resources.cpp
-C:\Users\jonat\source\repos\ParchisCliente\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: se ha utilizado una interfaz no de DLL class 'std::runtime_error' como base para la interfaz DLL class 'sf::Exception'
-  (compilando archivo de origen "resources.cpp")
-      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
-      vea la declaración de 'std::runtime_error'
-      C:\Users\jonat\source\repos\ParchisCliente\Dependencies\include\SFML\System\Exception.hpp(41,23):
-      vea la declaración de 'sf::Exception'
-  
   Generando código
-  6 of 229 functions ( 2.6%) were compiled, the rest were copied from previous compilation.
-    4 functions were new in current compilation
-    18 functions had inline decision re-evaluated but remain unchanged
+  0 of 229 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
   Generación de código finalizada
   Parchis.vcxproj -> C:\Users\jonat\source\repos\ParchisCliente\x64\Release\Parchis.exe
