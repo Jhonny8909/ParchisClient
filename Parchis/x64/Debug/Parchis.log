@@ -1,1 +1,19 @@
-﻿  Parchis.vcxproj -> C:\Users\jonat\source\repos\Parchis\x64\Debug\Parchis.exe
+﻿  Main.cpp
+C:\Users\jonat\source\repos\ParchisCliente\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: se ha utilizado una interfaz no de DLL class 'std::runtime_error' como base para la interfaz DLL class 'sf::Exception'
+  (compilando archivo de origen "Main.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      vea la declaración de 'std::runtime_error'
+      C:\Users\jonat\source\repos\ParchisCliente\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      vea la declaración de 'sf::Exception'
+  
+  resources.cpp
+C:\Users\jonat\source\repos\ParchisCliente\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: se ha utilizado una interfaz no de DLL class 'std::runtime_error' como base para la interfaz DLL class 'sf::Exception'
+  (compilando archivo de origen "resources.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      vea la declaración de 'std::runtime_error'
+      C:\Users\jonat\source\repos\ParchisCliente\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      vea la declaración de 'sf::Exception'
+  
+  Generando código...
+  LINK : no se encontró C:\Users\jonat\source\repos\ParchisCliente\x64\Debug\Parchis.exe o no lo generó el último vínculo incremental; ejecutando vínculo completo
+  Parchis.vcxproj -> C:\Users\jonat\source\repos\ParchisCliente\x64\Debug\Parchis.exe
