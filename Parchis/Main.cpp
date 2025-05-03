@@ -1,9 +1,9 @@
-#include "PantallaJuego.h"
+/*#include "PantallaJuego.h"
 #include "PantallaLobby.h"
 
 enum class Estado { Login, Lobby, Juego };
 
-int main() {
+int prueba() {
     Estado estadoActual = Estado::Juego; // Ejemplo: empezar en juego
     sf::RenderWindow window(sf::VideoMode({ 1920, 1080 }), "Parchis Online");
 
@@ -42,4 +42,4 @@ int main() {
     }
 
     return 0;
-}
+}*/

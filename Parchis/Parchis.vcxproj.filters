@@ -62,5 +62,8 @@
     <ClCompile Include="Dado.cpp">
       <Filter>Archivos de recursos\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Login.cpp">
+      <Filter>Archivos de recursos</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

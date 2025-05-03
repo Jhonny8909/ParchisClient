@@ -14,10 +14,10 @@ void Dado::cargarCaras(const std::vector<std::string>& rutas, const std::vector<
         }
         texturas.push_back(tex); // Almacenar la textura
 
-        sf::Sprite sprite;
+        /*sf::Sprite sprite;
         sprite.setTexture(texturas.back());
         sprite.setPosition(posiciones[i]);
-        caras.push_back(sprite);
+        caras.push_back(sprite);*/
     }
 }
 
