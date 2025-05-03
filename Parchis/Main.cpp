@@ -1,5 +1,5 @@
 #include "PantallaJuego.h"
-//#include "PantallaLobby.h"
+#include "PantallaLobby.h"
 
 enum class Estado { Login, Lobby, Juego };
 
@@ -21,9 +21,9 @@ int main() {
         case Estado::Juego:
             pantalla = std::make_unique<PantallaJuego>();
             break;
-		//case Estado::Lobby:
-			//pantalla = std::make_unique<PantallaLobby>();
-			//break;
+		case Estado::Lobby:
+			Lobby();
+			break;
 		//case Estado::Login:
 		//	pantalla = std::make_unique<PantallaLogin>();
 		//	break;

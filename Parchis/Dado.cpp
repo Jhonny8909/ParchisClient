@@ -1,19 +1,27 @@
 #include "Dado.hpp"
 
-void Dado::cargarCaras(const sf::Texture& tex, const std::vector<sf::Vector2f>& posiciones) {
-    auto cargarCara = [&](const sf::Vector2f& pos) {
-        caras.emplace_back(tex);
-        caras.back().setPosition(pos);
-        // Ajusta el textureRect para cada cara (asume spritesheet horizontal)
-        int indice = static_cast<int>(caras.size()) - 1;
-        caras.back().setTextureRect({ indice * 100, 0, 100, 100 });
-        };
+void Dado::cargarCaras(const std::vector<std::string>& rutas, const std::vector<sf::Vector2f>& posiciones) {
+    // Asegurarse que hay 6 texturas y 6 posiciones
+    if (rutas.size() != 6 || posiciones.size() != 6) {
+        throw std::runtime_error("Se necesitan exactamente 6 texturas y 6 posiciones para el dado");
+    }
 
-    for (const auto& pos : posiciones) {
-        cargarCara(pos);
+    // Cargar cada textura y crear su sprite
+    for (size_t i = 0; i < 6; ++i) {
+        sf::Texture tex;
+        if (!tex.loadFromFile(rutas[i])) {
+            throw std::runtime_error("Error al cargar textura del dado: " + rutas[i]);
+        }
+        texturas.push_back(tex); // Almacenar la textura
+
+        sf::Sprite sprite;
+        sprite.setTexture(texturas.back());
+        sprite.setPosition(posiciones[i]);
+        caras.push_back(sprite);
     }
 }
 
+// Resto de métodos permanecen iguales...
 void Dado::lanzar() {
     estaAnimando = true;
     relojAnimacion.restart();
@@ -23,7 +31,7 @@ void Dado::lanzar() {
 void Dado::actualizar(float deltaTime) {
     if (estaAnimando && relojAnimacion.getElapsedTime().asSeconds() < 1.0f) {
         for (auto& cara : caras) {
-            cara.rotate(360 * deltaTime * 5);  // Animación de giro
+            cara.rotate(sf::degrees(360) * deltaTime * 5); // Animación de giro
         }
     }
     else {
@@ -33,10 +41,10 @@ void Dado::actualizar(float deltaTime) {
 
 void Dado::dibujar(sf::RenderWindow& ventana) const {
     if (estaAnimando) {
-        ventana.draw(caras[rand() % 6]);  // Cara aleatoria durante animación
+        ventana.draw(caras[rand() % 6]); // Cara aleatoria durante animación
     }
     else {
-        ventana.draw(caras[valorActual - 1]);  // Cara final
+        ventana.draw(caras[valorActual - 1]); // Cara final
     }
 }
 

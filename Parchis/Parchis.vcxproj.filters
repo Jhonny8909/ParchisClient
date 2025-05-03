@@ -59,9 +59,6 @@
     <ClCompile Include="resources.cpp">
       <Filter>Archivos de recursos\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="PantallaLobby.cpp">
-      <Filter>Archivos de recursos\Ventanas</Filter>
-    </ClCompile>
     <ClCompile Include="Dado.cpp">
       <Filter>Archivos de recursos\Core</Filter>
     </ClCompile>
