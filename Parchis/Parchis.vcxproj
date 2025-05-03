@@ -19,14 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Dado.hpp" />
+    <ClInclude Include="Ficha.hpp" />
+    <ClInclude Include="Jugador.hpp" />
+    <ClInclude Include="LobbyResources.h" />
     <ClInclude Include="Pantalla.h" />
     <ClInclude Include="PantallaJuego.h" />
     <ClInclude Include="PantallaLobby.h" />
-    <ClInclude Include="PantallaLogin.h" />
     <ClInclude Include="resources.h" />
+    <ClInclude Include="Tablero.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Dado.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="PantallaLobby.cpp" />
     <ClCompile Include="resources.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

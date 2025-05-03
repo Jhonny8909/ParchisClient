@@ -1,6 +1,5 @@
 #include "PantallaJuego.h"
-#include "PantallaLobby.h"
-#include "PantallaLogin.h"
+//#include "PantallaLobby.h"
 
 enum class Estado { Login, Lobby, Juego };
 
@@ -11,6 +10,7 @@ int main() {
     sf::Clock clock;
 
     std::unique_ptr<Pantalla> estado = std::make_unique<PantallaJuego>();
+	//std::unique_ptr<Pantalla> estado = std::make_unique<PantallaLobby>();
 
     while (window.isOpen()) {
         float dt = clock.restart().asSeconds();
@@ -21,12 +21,12 @@ int main() {
         case Estado::Juego:
             pantalla = std::make_unique<PantallaJuego>();
             break;
-		/*case Estado::Lobby:
-			pantalla = std::make_unique<PantallaLobby>();
-			break;
-		case Estado::Login:
-			pantalla = std::make_unique<PantallaLogin>();
-			break;*/
+		//case Estado::Lobby:
+			//pantalla = std::make_unique<PantallaLobby>();
+			//break;
+		//case Estado::Login:
+		//	pantalla = std::make_unique<PantallaLogin>();
+		//	break;
             // ... otros casos (Login, Lobby)
         }
 

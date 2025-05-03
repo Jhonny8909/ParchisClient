@@ -24,13 +24,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PantallaLogin.h">
-      <Filter>Archivos de recursos\Ventanas</Filter>
-    </ClInclude>
     <ClInclude Include="PantallaJuego.h">
-      <Filter>Archivos de recursos\Ventanas</Filter>
-    </ClInclude>
-    <ClInclude Include="PantallaLobby.h">
       <Filter>Archivos de recursos\Ventanas</Filter>
     </ClInclude>
     <ClInclude Include="Pantalla.h">
@@ -39,6 +33,24 @@
     <ClInclude Include="resources.h">
       <Filter>Archivos de recursos\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="PantallaLobby.h">
+      <Filter>Archivos de recursos\Ventanas</Filter>
+    </ClInclude>
+    <ClInclude Include="LobbyResources.h">
+      <Filter>Archivos de recursos\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Jugador.hpp">
+      <Filter>Archivos de recursos\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Ficha.hpp">
+      <Filter>Archivos de recursos\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Dado.hpp">
+      <Filter>Archivos de recursos\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Tablero.hpp">
+      <Filter>Archivos de recursos\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -46,6 +58,12 @@
     </ClCompile>
     <ClCompile Include="resources.cpp">
       <Filter>Archivos de recursos\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="PantallaLobby.cpp">
+      <Filter>Archivos de recursos\Ventanas</Filter>
+    </ClCompile>
+    <ClCompile Include="Dado.cpp">
+      <Filter>Archivos de recursos\Core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
