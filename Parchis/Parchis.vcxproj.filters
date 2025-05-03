@@ -13,18 +13,39 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Archivos de recursos\Core">
+      <UniqueIdentifier>{c1523a7d-b110-4af4-a5ce-839ce2912847}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de recursos\Ventanas">
+      <UniqueIdentifier>{268d0503-8607-4e9b-8ec9-c81870a80bbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de recursos\Resources">
+      <UniqueIdentifier>{1fc8d15a-a3dd-4f32-aa80-3f41d1c20724}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="PantallaLogin.h">
+      <Filter>Archivos de recursos\Ventanas</Filter>
+    </ClInclude>
+    <ClInclude Include="PantallaJuego.h">
+      <Filter>Archivos de recursos\Ventanas</Filter>
+    </ClInclude>
+    <ClInclude Include="PantallaLobby.h">
+      <Filter>Archivos de recursos\Ventanas</Filter>
+    </ClInclude>
+    <ClInclude Include="Pantalla.h">
+      <Filter>Archivos de recursos\Ventanas</Filter>
+    </ClInclude>
     <ClInclude Include="resources.h">
-      <Filter>Archivos de recursos</Filter>
+      <Filter>Archivos de recursos\Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="resources.cpp">
-      <Filter>Archivos de recursos</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Archivos de recursos</Filter>
+    </ClCompile>
+    <ClCompile Include="resources.cpp">
+      <Filter>Archivos de recursos\Resources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

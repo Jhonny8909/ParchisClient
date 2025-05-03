@@ -19,6 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Pantalla.h" />
+    <ClInclude Include="PantallaJuego.h" />
+    <ClInclude Include="PantallaLobby.h" />
+    <ClInclude Include="PantallaLogin.h" />
     <ClInclude Include="resources.h" />
   </ItemGroup>
   <ItemGroup>

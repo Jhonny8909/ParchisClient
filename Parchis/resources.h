@@ -3,14 +3,13 @@
 #include <string>
 
 struct GameResources {
+    sf::Texture fondo;         // Fondo general
+    sf::Texture decoracion;    // Decoración adicional
+    sf::Texture tablero;       // Imagen del tablero
+    sf::Texture fichaRoja;
+    sf::Texture fichaAmarilla;
+    sf::Texture fichaAzul;
+    sf::Texture fichaVerde;
 
-	sf::Texture texture;
-	sf::Texture texture2;
-	sf::Texture texture3;
-	sf::Texture texture4;
-	sf::Texture texture5;
-	sf::Texture texture6;
-	sf::Texture tex2;
-
-	bool loadAllResources();
+    bool loadAllResources();
 };
