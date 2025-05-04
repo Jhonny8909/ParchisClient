@@ -1,20 +1,6 @@
-﻿  Main.cpp
-C:\Users\andri\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: se ha utilizado una interfaz no de DLL class 'std::runtime_error' como base para la interfaz DLL class 'sf::Exception'
-  (compilando archivo de origen "Main.cpp")
-      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
-      vea la declaración de 'std::runtime_error'
-      C:\Users\andri\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,23):
-      vea la declaración de 'sf::Exception'
-  
-C:\Users\andri\source\repos\ParchisClient\Parchis\PantallaLobby.h(119,24): warning C4244: 'argumento': conversión de 'float' a 'unsigned int'; posible pérdida de datos
-  (compilando archivo de origen "Main.cpp")
-  
-C:\Users\andri\source\repos\ParchisClient\Parchis\PantallaLobby.h(124,25): warning C4244: 'argumento': conversión de 'float' a 'unsigned int'; posible pérdida de datos
-  (compilando archivo de origen "Main.cpp")
-  
+﻿  Login.cpp
   Generando código
-  0 of 431 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  Previous IPDB was built with incompatible compiler, fall back to full compilation.
+  All 455 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Generación de código finalizada
-  Parchis.vcxproj -> C:\Users\andri\source\repos\ParchisClient\x64\Release\Parchis.exe
+  Parchis.vcxproj -> C:\Users\jonat\source\repos\ParchisClient\x64\Release\Parchis.exe

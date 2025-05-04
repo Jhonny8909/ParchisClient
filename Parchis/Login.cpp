@@ -1,4 +1,4 @@
-#include <SFML/Network.hpp>
+/*#include <SFML/Network.hpp>
 #include<iostream>
 #include<string>
 #include <SFML/Graphics.hpp>
@@ -323,4 +323,4 @@ void main()
     }
     
     delete window;
-}
+}*/

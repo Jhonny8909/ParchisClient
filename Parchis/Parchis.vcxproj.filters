@@ -65,5 +65,11 @@
     <ClCompile Include="Login.cpp">
       <Filter>Archivos de recursos</Filter>
     </ClCompile>
+    <ClCompile Include="LobbyResources.cpp">
+      <Filter>Archivos de recursos\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="PantallaLobby.cpp">
+      <Filter>Archivos de recursos\Ventanas</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

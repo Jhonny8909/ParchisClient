@@ -1,21 +1,23 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <vector>
 #include <string>
 
-using namespace sf;
+class LobbyResources {
+public:
+    // Texturas
+    sf::Texture fondo;
+    sf::Texture decoracion;
+    sf::Texture crear;
+    sf::Texture Codigocrear;
+    sf::Texture ok;
+    sf::Texture Unir;
+    sf::Texture Codigounir;
+    sf::Texture okHover;
 
-struct LobbyResources {
+    // Fuente
+    sf::Font font;
+    std::vector<sf::Text> texts;
 
-	Texture fondo;         // Fondo general
-	Texture garabatos;    // Decoración adicional
-	Texture textoCrea;
-	Texture codigoCrea;
-	Texture botonOK;
-	Texture textoUnir;
-	Texture codigoUnir;
-	Texture botonOK2;
-	Texture botonHover;
-	Font fuente;
-
-    bool loadAllResources();
+    bool loadAll();
 };
