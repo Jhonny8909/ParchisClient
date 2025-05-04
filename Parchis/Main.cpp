@@ -4,7 +4,7 @@
 enum class Estado { Login, Lobby, Juego };
 
 int main() {
-    Estado estadoActual = Estado::Lobby; // Ejemplo: empezar en juego
+    Estado estadoActual = Estado::Juego; // Ejemplo: empezar en juego
     sf::RenderWindow window(sf::VideoMode({ 1920, 1080 }), "Parchis Online");
 
     sf::Clock clock;
