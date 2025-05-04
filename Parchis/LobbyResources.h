@@ -1,4 +1,4 @@
-/*#pragma once
+#pragma once
 #include <SFML/Graphics.hpp>
 #include <string>
 
@@ -18,4 +18,4 @@ struct LobbyResources {
 	Font fuente;
 
     bool loadAllResources();
-};*/
+};
