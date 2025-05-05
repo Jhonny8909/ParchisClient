@@ -5,7 +5,7 @@
 
 class LobbyScreen : public Pantalla {
 public:
-    explicit LobbyScreen(sf::RenderWindow& mainWindow);
+    explicit LobbyScreen(sf::RenderWindow& mainWindow, sf::TcpSocket& socket);
 
     void handleInput(sf::RenderWindow& window) override;
     void update(float dt) override;
@@ -17,7 +17,7 @@ public:
 private:
     sf::RenderWindow& window;
     LobbyResources resources;
-    sf::TcpSocket socket;
+    sf::TcpSocket& socket;
 
     // Variables de estado
     std::string codigoCrear;

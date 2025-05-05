@@ -4,21 +4,14 @@
 #define WIDTH 1920
 #define HEIGHT 1080
 
-#define SERVER_PORT 55000
-const sf::IpAddress SERVER_IP = sf::IpAddress(192,168,0,25);
+//#define SERVER_PORT 55000
+//const sf::IpAddress SERVER_IP = sf::IpAddress(192,168,0,25);
 
-LobbyScreen::LobbyScreen(sf::RenderWindow& mainWindow) : window(mainWindow) {
+LobbyScreen::LobbyScreen(sf::RenderWindow& mainWindow, sf::TcpSocket& socket) : window(mainWindow), socket(socket) {
     if (!resources.loadAll()) {
         std::cerr << "Error al cargar recursos" << std::endl;
         return;
     }
-
-	sf::TcpSocket socket;
-
-	if (socket.connect(SERVER_IP, SERVER_PORT) != sf::Socket::Status::Done) {
-		std::cerr << "Error al conectar al servidor" << std::endl;
-		return;
-	}
 
     // Función lambda para carga de sprites
     auto cargarFichas = [&](sf::Texture& tex, const std::vector<sf::Vector2f>& posiciones) {
@@ -119,32 +112,63 @@ void LobbyScreen::handleEvents() {
 
         if (crearClick) {
             sf::Packet packet;
-            std::string tipo = "CREAR";
-            packet << tipo << codigoCrear;
+            std::string accion = "CREAR";
+            packet << accion << codigoCrear;
 
             if (socket.send(packet) != sf::Socket::Status::Done) {
-                std::cerr << "Error al enviar el código al servidor." << std::endl;
+                std::cerr << "Error al enviar el codigo al servidor." << std::endl;
             }
             else {
-                std::cout << "Código de sala enviado: " << codigoCrear << std::endl;
+                std::cout << "Codigo de sala enviado: " << codigoCrear << std::endl;
             }
 
             crearClick = false;
+
+            sf::Packet respuesta;
+            if (socket.receive(respuesta) == sf::Socket::Status::Done) {
+                std::string mensaje;
+                if (respuesta >> mensaje && mensaje == "INICIANDO") {
+                    std::cout << "El servidor indicó que el juego va a iniciar." << std::endl;
+                    //Cambio a Juego
+                }
+                else {
+                    std::cout << "Mensaje del servidor: " << mensaje << std::endl;
+                }
+            }
+            else {
+                std::cerr << "Error al recibir mensaje del servidor." << std::endl;
+            }
         }
 
         if (unirClick) {
             sf::Packet packet;
-            std::string tipo = "UNIRSE";
-            packet << tipo << codigoUnir;
+            std::string accion = "UNIRSE";
+            packet << accion << codigoUnir;
 
             if (socket.send(packet) != sf::Socket::Status::Done) {
-                std::cerr << "Error al enviar el código al servidor." << std::endl;
+                std::cerr << "Error al enviar el codigo al servidor." << std::endl;
             }
             else {
-                std::cout << "Código de sala enviado: " << codigoUnir << std::endl;
+                std::cout << "Codigo de sala enviado: " << codigoUnir << std::endl;
             }
 
             unirClick = false;
+
+            sf::Packet respuesta;
+            if (socket.receive(respuesta) == sf::Socket::Status::Done) {
+                std::string mensaje;
+                if (respuesta >> mensaje && mensaje == "INICIANDO") {
+                    std::cout << "El servidor indicó que el juego va a iniciar." << std::endl;
+                    //Cambio a Juego
+                }
+                else {
+                    std::cout << "Mensaje del servidor: " << mensaje << std::endl;
+                }
+            }
+            else {
+                std::cerr << "Error al recibir mensaje del servidor." << std::endl;
+            }
+
         }
     }
 }
@@ -158,6 +182,8 @@ void LobbyScreen::update(float dt) {
     box2.setOutlineColor(inputUnirActivo ? sf::Color::Green : sf::Color::White);
     boton1.setOutlineColor(crearClick ? sf::Color::Green : sf::Color::White);
     boton2.setOutlineColor(unirClick ? sf::Color::Green : sf::Color::White);
+
+
 }
 
 void LobbyScreen::render() {

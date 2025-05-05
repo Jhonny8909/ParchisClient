@@ -51,6 +51,12 @@
     <ClInclude Include="Tablero.hpp">
       <Filter>Archivos de recursos\Core</Filter>
     </ClInclude>
+    <ClInclude Include="PantallaLogin.h">
+      <Filter>Archivos de recursos\Ventanas</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginResources.h">
+      <Filter>Archivos de recursos\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -70,6 +76,12 @@
     </ClCompile>
     <ClCompile Include="PantallaLobby.cpp">
       <Filter>Archivos de recursos\Ventanas</Filter>
+    </ClCompile>
+    <ClCompile Include="PantallaLogin.cpp">
+      <Filter>Archivos de recursos\Ventanas</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginResources.cpp">
+      <Filter>Archivos de recursos\Resources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
