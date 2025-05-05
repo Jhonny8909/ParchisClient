@@ -1,70 +1,49 @@
 #pragma once
 #include "Pantalla.h"
+#include "Tablero.hpp"
+#include "JugadorBase.hpp"  // Clase base para los jugadores
+#include "Dado.hpp"
+#include <memory>           // Para std::unique_ptr
+#include <array>            // Para std::array
+#include <vector>           // Para std::vector
 #include "resources.h"
-#include <optional>
-#include <iostream>
 
-using namespace sf;
-using namespace std;
+// Declaración adelantada para evitar includes circulares
+class Jugador;  // Solo si realmente necesitas la clase Jugador concreta
 
 class PantallaJuego : public Pantalla {
-
+public:
+    explicit PantallaJuego(sf::RenderWindow& mainWindow);
+    void handleInput(sf::RenderWindow& window) override;
+    void update(float dt) override;
+    void draw(sf::RenderWindow& window) override;
+    std::string nextState() const override;
 
 private:
+
     GameResources resources;
-    vector<Sprite> sprite;
-    string siguienteEstado = "juego";
+    sf::RenderWindow& window;
+    // Componentes del juego - especificando tipos claramente
+    Tablero tablero;  // Asegúrate que Tablero esté definido en Tablero.hpp
+    Dado dado;        // Asegúrate que Dado esté definido en Dado.hpp
 
-public:
+    // Sistema de jugadores - versión correcta
+    std::array<std::unique_ptr<JugadorBase>, 4> jugadores;  // Usando JugadorBase
 
-    PantallaJuego() {
-        if (!resources.loadAllResources()) {
-            cerr << "Error al cargar texturas." << endl;
-            throw std::runtime_error("Fallo al cargar texturas.");
-        }
+    // Estado del juego
+    int jugadorActual = 0;
+    int valorDado = 1;
+    bool esperandoLanzamiento = true;
+    bool esperandoSeleccion = false;
+    std::string siguienteEstado = "juego";
 
-        // Posiciones por color
-        auto cargarFichas = [&](Texture& tex, const vector<Vector2f>& posiciones) {
-            sprite.reserve(sprite.size() + posiciones.size());  // Prevent multiple reallocations
-            for (const auto& pos : posiciones) {
-                sprite.emplace_back(tex);  // Constructs sprite directly in the vector
-                sprite.back().setPosition(pos);
-            }
-            };
+    // UI
+    sf::Font font;
+    sf::Text textoTurno;
+    sf::Text textoDado;
 
-		cargarFichas(resources.fondo, { {0,0} }); // Fondo
-		cargarFichas(resources.decoracion, { {0,0} }); // Decoración
-		cargarFichas(resources.tablero, { {450,50} }); // Tablero
-        cargarFichas(resources.fichaRoja, { {610,190}, {745,190}, {610,300}, {745,300} });   // Rojas
-        cargarFichas(resources.fichaAmarilla, { {610,700}, {745,700}, {610,810}, {745,810} });   // Amarillas
-        cargarFichas(resources.fichaAzul, { {1160,700}, {1290,700}, {1160,810}, {1290,810} }); // Azules
-        cargarFichas(resources.fichaVerde, { {1160,190}, {1290,190}, {1160,300}, {1290,300} }); // Verdes
-    }
-
-    void handleInput(RenderWindow& window) override {
-        while (const optional<Event> event = window.pollEvent()) {
-            if (event->is<Event::Closed>()) {
-                window.close();
-            }
-
-            // Aquí puedes manejar clicks, teclas, etc.
-        }
-    }
-
-    void update(float dt) override {
-        // Lógica futura: movimiento, colisiones, turnos, etc.
-
-        
-		
-    }
-
-    void draw(RenderWindow& window) override {
-        for (auto& sprites : sprite) {
-            window.draw(sprites);
-        }
-    }
-
-    string nextState() const override {
-        return siguienteEstado;
-    }
+    // Métodos privados
+    void inicializarJugadores();
+    void actualizarUI();
+    void cambiarTurno();
 };

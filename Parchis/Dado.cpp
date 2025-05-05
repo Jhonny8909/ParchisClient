@@ -1,53 +1,50 @@
 #include "Dado.hpp"
+#include <cstdlib>
+#include <ctime>
 
-void Dado::cargarCaras(const std::vector<std::string>& rutas, const std::vector<sf::Vector2f>& posiciones) {
-    // Asegurarse que hay 6 texturas y 6 posiciones
-    if (rutas.size() != 6 || posiciones.size() != 6) {
-        throw std::runtime_error("Se necesitan exactamente 6 texturas y 6 posiciones para el dado");
+Dado::Dado(GameResources& resources) {
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
+
+    // Función lambda para cargar dados (versión mejorada)
+    auto cargarDado = [&](sf::Texture& tex, const sf::Vector2f& posicion) {
+        spritesDado.emplace_back(tex);
+        spritesDado.back().setPosition(posicion);
+        };
+
+    // Cargamos cada cara del dado con su textura
+    cargarDado(resources.dado1, { 800, 800 });
+    cargarDado(resources.dado2, { 800, 800 });
+    cargarDado(resources.dado3, { 800, 800 });
+    cargarDado(resources.dado4, { 800, 800 });
+    cargarDado(resources.dado5, { 800, 800 });
+    cargarDado(resources.dado6, { 800, 800 });
+
+    if (spritesDado.empty()) {
+        throw std::runtime_error("Error al cargar sprites del dado");
     }
 
-    // Cargar cada textura y crear su sprite
-    for (size_t i = 0; i < 6; ++i) {
-        sf::Texture tex;
-        if (!tex.loadFromFile(rutas[i])) {
-            throw std::runtime_error("Error al cargar textura del dado: " + rutas[i]);
-        }
-        texturas.push_back(tex); // Almacenar la textura
-
-        //sf::Sprite sprite;
-        //sprite.setTexture(texturas.back());
-        //sprite.setPosition(posiciones[i]);
-        //caras.push_back(sprite);
-    }
+    spriteActual = &spritesDado[0];
 }
 
-// Resto de métodos permanecen iguales...
 void Dado::lanzar() {
     estaAnimando = true;
     relojAnimacion.restart();
-    valorActual = rand() % 6 + 1;
+    valorActual = (std::rand() % 6) + 1;
 }
 
 void Dado::actualizar(float deltaTime) {
-    if (estaAnimando && relojAnimacion.getElapsedTime().asSeconds() < 1.0f) {
-        for (auto& cara : caras) {
-            cara.rotate(sf::degrees(360) * deltaTime * 5); // Animación de giro
+    if (estaAnimando) {
+        if (relojAnimacion.getElapsedTime().asSeconds() < 1.0f) {
+            int caraAleatoria = std::rand() % 6;
+            spriteActual = &spritesDado[caraAleatoria];
         }
-    }
-    else {
-        estaAnimando = false;
+        else {
+            estaAnimando = false;
+            spriteActual = &spritesDado[valorActual - 1];
+        }
     }
 }
 
 void Dado::dibujar(sf::RenderWindow& ventana) const {
-    if (estaAnimando) {
-        ventana.draw(caras[rand() % 6]); // Cara aleatoria durante animación
-    }
-    else {
-        ventana.draw(caras[valorActual - 1]); // Cara final
-    }
-}
-
-int Dado::getValor() const {
-    return valorActual;
+    ventana.draw(*spriteActual);
 }

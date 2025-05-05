@@ -2,11 +2,22 @@
 #include <SFML/Graphics.hpp>
 
 class Ficha {
-public:
+protected:
     sf::Sprite sprite;
     int id;
-    int casillaActual = -1; // -1 = en casa
+    int casillaActual = -1;  // -1: en casa
     bool enMeta = false;
 
-    void mover(int pasos, const std::vector<sf::Vector2f>& camino);
+public:
+    Ficha(int id, const sf::Vector2f& posicionInicial);
+    virtual ~Ficha() = default;
+
+    // Métodos comunes
+    void mover(const sf::Vector2f& nuevaPosicion);
+    virtual void dibujar(sf::RenderWindow& ventana) const;
+    bool puedeMoverse(int valorDado) const;
+
+    // Getters
+    int getCasillaActual() const { return casillaActual; }
+    bool estaEnMeta() const { return enMeta; }
 };
