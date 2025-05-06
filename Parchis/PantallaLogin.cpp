@@ -32,9 +32,11 @@ PantallaLogin::PantallaLogin(sf::RenderWindow& mainWindow, sf::TcpSocket& socket
 
     loginButtonRect.setSize({ 635, 173 });
     loginButtonRect.setPosition({ 1000, 635});
+    loginButtonRect.setFillColor(sf::Color::Transparent);
 
     registerButtonRect.setSize({ 635, 173 });
     registerButtonRect.setPosition({ 250, 635});
+    registerButtonRect.setFillColor(sf::Color::Transparent);
 }
 
 void PantallaLogin::handleInput(sf::RenderWindow& window) {
@@ -55,6 +57,8 @@ void PantallaLogin::draw(sf::RenderWindow& window) {
     for (const auto& sprite : sprites) {
         window.draw(sprite);
     }
+    window.draw(loginButtonRect);
+    window.draw(registerButtonRect);
     window.draw(resources.texts[0]); // Username
     window.draw(resources.texts[1]); // Password
 }
@@ -66,7 +70,7 @@ void PantallaLogin::handleEvents() {
         }
 
         if (const sf::Event::KeyPressed* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
-            if (keyPressed->code == sf::Keyboard::Key::Enter && eventPressed < 2) {
+            if (keyPressed->code == sf::Keyboard::Key::Enter && eventPressed < 1) {
                 eventPressed++;
             }
         }
@@ -93,22 +97,31 @@ void PantallaLogin::handleEvents() {
                 resources.texts[0].setString(std::string(contrasena));
             }
         }
-
-        if (const auto* mouseButton = event->getIf<sf::Event::MouseButtonPressed>()) {
-            if (mouseButton->button == sf::Mouse::Button::Left) {
-                sf::Vector2f mousePos = window.mapPixelToCoords({ mouseButton->position.x, mouseButton->position.y });
-                if (loginButtonRect.getGlobalBounds().contains(mousePos)) {
-                    shouldSendLogin = true;
-                    eventPressed = 2; // bloquea escritura después
-                    std::cout << "Login enviado" << std::endl;
-                }
-                else if (registerButtonRect.getGlobalBounds().contains(mousePos)) {
-                    shouldSendRegister = true;
-                    eventPressed = 2; // bloquea escritura después
-                    std::cout << "register enviado" << std::endl;
+        if(eventPressed==1 || eventPressed==2){
+            if (const auto* mouseButton = event->getIf<sf::Event::MouseButtonPressed>()) {
+                if (mouseButton->button == sf::Mouse::Button::Left) {
+                    sf::Vector2f mousePos = window.mapPixelToCoords({ mouseButton->position.x, mouseButton->position.y });
+                    if (loginButtonRect.getGlobalBounds().contains(mousePos)) {
+                        shouldSendLogin = true;
+                        loginButtonRect.setFillColor(sf::Color::Red);
+                        eventPressed = 2;// bloquea escritura después
+                        std::cout << "Login enviado" << std::endl;
+                    }
+                    else if (registerButtonRect.getGlobalBounds().contains(mousePos)) {
+                        registerButtonRect.setFillColor(sf::Color::Red);
+                        shouldSendRegister = true;
+                        eventPressed = 2; // bloquea escritura después
+                        std::cout << "register enviado" << std::endl;
+                    }
                 }
             }
+            else {
+                registerButtonRect.setFillColor(sf::Color::Transparent);
+                loginButtonRect.setFillColor(sf::Color::Transparent);
+            }
+
         }
+        
     }
 }
 
