@@ -4,7 +4,7 @@
 #include "PantallaLogin.h" // si la implementas
 
 #define SERVER_PORT 55000
-const sf::IpAddress SERVER_IP = sf::IpAddress(192, 168, 0, 25);
+const sf::IpAddress SERVER_IP = sf::IpAddress(127, 0, 0, 1);
 
 
 
@@ -12,7 +12,6 @@ const sf::IpAddress SERVER_IP = sf::IpAddress(192, 168, 0, 25);
 enum class Estado { Login, Lobby, Juego, Ninguno };
 
 std::unique_ptr<Pantalla> crearPantalla(Estado estado, sf::RenderWindow& window, sf::TcpSocket& socket) {
-    sf::Socket::Status status = socket.connect({ 192, 168, 0, 25 }, 55000);
     switch (estado) {
     case Estado::Lobby: return std::make_unique<LobbyScreen>(window, socket);
         //case Estado::Juego: return std::make_unique<PantallaJuego>(window);

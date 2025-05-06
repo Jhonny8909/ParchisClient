@@ -31,10 +31,10 @@ PantallaLogin::PantallaLogin(sf::RenderWindow& mainWindow, sf::TcpSocket& socket
     cargarFichas(resources.registerButtonHover, { {250, 635} });
 
     loginButtonRect.setSize({ 635, 173 });
-    loginButtonRect.setPosition({ 1000, HEIGHT * 2.5f / 4 });
+    loginButtonRect.setPosition({ 1000, 635});
 
     registerButtonRect.setSize({ 635, 173 });
-    registerButtonRect.setPosition({ 250, HEIGHT * 2.5f / 4 });
+    registerButtonRect.setPosition({ 250, 635});
 }
 
 void PantallaLogin::handleInput(sf::RenderWindow& window) {
@@ -56,7 +56,7 @@ void PantallaLogin::draw(sf::RenderWindow& window) {
         window.draw(sprite);
     }
     window.draw(resources.texts[0]); // Username
-    window.draw(resources.texts[1]); // Password (masked)
+    window.draw(resources.texts[1]); // Password
 }
 
 void PantallaLogin::handleEvents() {
@@ -79,7 +79,7 @@ void PantallaLogin::handleEvents() {
                 else if (textEvent->unicode < 128 && textEvent->unicode != '\r') {
                     usuario += static_cast<char>(textEvent->unicode);
                 }
-                resources.texts[0].setString(usuario);
+                resources.texts[1].setString(usuario);
             }
         }
         else if (eventPressed == 1) {
@@ -90,7 +90,7 @@ void PantallaLogin::handleEvents() {
                 else if (textEvent->unicode < 128 && textEvent->unicode != '\r') {
                     contrasena += static_cast<char>(textEvent->unicode);
                 }
-                resources.texts[1].setString(std::string(contrasena.length(), '*'));
+                resources.texts[0].setString(std::string(contrasena));
             }
         }
 
@@ -100,10 +100,12 @@ void PantallaLogin::handleEvents() {
                 if (loginButtonRect.getGlobalBounds().contains(mousePos)) {
                     shouldSendLogin = true;
                     eventPressed = 2; // bloquea escritura después
+                    std::cout << "Login enviado" << std::endl;
                 }
                 else if (registerButtonRect.getGlobalBounds().contains(mousePos)) {
                     shouldSendRegister = true;
                     eventPressed = 2; // bloquea escritura después
+                    std::cout << "register enviado" << std::endl;
                 }
             }
         }
