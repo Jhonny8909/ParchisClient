@@ -50,6 +50,10 @@ void PantallaLogin::update(float dt) {
     else if (shouldSendRegister) {
         sendAuthPacket(false);
     }
+
+    if (success) {
+        receiveAuthPacket(success);
+    }
 }
 
 void PantallaLogin::draw(sf::RenderWindow& window) {
@@ -144,28 +148,25 @@ void PantallaLogin::sendAuthPacket(bool isLogin) {
     shouldSendRegister = false;
 }
 
-std::string PantallaLogin::hashSHA256(const std::string& password) {
-    unsigned char hash[SHA256_DIGEST_LENGTH];
-    EVP_MD_CTX* mdctx = EVP_MD_CTX_new();
-
-    if (!mdctx) return "";
-
-    if (EVP_DigestInit_ex(mdctx, EVP_sha256(), nullptr) != 1 ||
-        EVP_DigestUpdate(mdctx, password.c_str(), password.size()) != 1 ||
-        EVP_DigestFinal_ex(mdctx, hash, nullptr) != 1) {
-        EVP_MD_CTX_free(mdctx);
-        return "";
+void PantallaLogin::receiveAuthPacket(bool success) {
+    sf::Packet packet;
+    if (socket.receive(packet) == sf::Socket::Status::Done) {
+        bool mensaje;
+        if (packet >> mensaje) {
+            std::cout << "Mensaje recibido: " << mensaje << std::endl;
+            if (mensaje == true) {
+                NextWindow = "Lobby";
+            }
+            else {
+                std::cerr << "Error en la autenticación: " << mensaje << std::endl;
+            }
+        }
     }
-
-    EVP_MD_CTX_free(mdctx);
-
-    std::ostringstream ss;
-    for (int i = 0; i < SHA256_DIGEST_LENGTH; ++i)
-        ss << std::hex << std::setw(2) << std::setfill('0') << (int)hash[i];
-
-    return ss.str();
+    else {
+        std::cerr << "Error al recibir respuesta del servidor." << std::endl;
+    }
 }
 
 std::string PantallaLogin::nextState() const {
-    return "Lobby";
+    return NextWindow;
 }

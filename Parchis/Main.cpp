@@ -1,4 +1,4 @@
-#include "PantallaJuego.h"
+//#include "PantallaJuego.h"
 #include "PantallaLobby.h"
 #include <iostream>
 #include "PantallaLogin.h" // si la implementas
@@ -54,11 +54,11 @@ int main() {
             estadoActual = Estado::Juego;
             pantalla = crearPantalla(estadoActual, window);
         }
-        else*/ if (siguiente == "lobby") {
+        else*/ if (siguiente == "Lobby") {
             estadoActual = Estado::Lobby;
             pantalla = crearPantalla(estadoActual, window, socket);
         }
-        else if (siguiente == "login") {
+        else if (siguiente == "Login") {
             estadoActual = Estado::Login;
             pantalla = crearPantalla(estadoActual, window, socket);
         }

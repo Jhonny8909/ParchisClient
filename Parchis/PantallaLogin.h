@@ -26,6 +26,7 @@ private:
     int inputState = 0; // 0: usuario, 1: contraseña
     std::string usuario;
     std::string contrasena;
+    std::string NextWindow;
 
     sf::RectangleShape loginButtonRect;
     sf::RectangleShape registerButtonRect;
@@ -33,7 +34,9 @@ private:
     int eventPressed = 0;
     bool shouldSendLogin = false;
     bool shouldSendRegister = false;
+	bool success;
 
     void handleEvents();
     void sendAuthPacket(bool isLogin);
+    void receiveAuthPacket(bool success);
 };

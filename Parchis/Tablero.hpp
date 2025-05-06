@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include <SFML/Graphics.hpp>
 #include <array>
 #include <vector>
@@ -32,4 +32,4 @@ private:
         const std::array<std::unique_ptr<JugadorBase>, 4>& jugadores) {
         // Implementa la lógica de movimiento aquí
     }
-};
+};*/

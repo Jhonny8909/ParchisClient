@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "Pantalla.h"
 #include "Tablero.hpp"
 #include "JugadorBase.hpp"  // Clase base para los jugadores
@@ -46,4 +46,4 @@ private:
     void inicializarJugadores();
     void actualizarUI();
     void cambiarTurno();
-};
+};*/

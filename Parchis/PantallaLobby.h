@@ -34,4 +34,5 @@ private:
 
     void handleEvents();
     void render();
+
 };
