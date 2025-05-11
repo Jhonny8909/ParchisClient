@@ -51,8 +51,8 @@ void PantallaLogin::update(float dt) {
         sendAuthPacket(false);
     }
 
-    if (success) {
-        receiveAuthPacket(success);
+    if (success == true) {
+        receiveAuthPacket();
     }
 }
 
@@ -139,6 +139,7 @@ void PantallaLogin::sendAuthPacket(bool isLogin) {
     if (socket.send(packet) == sf::Socket::Status::Done) {
         std::cout << (isLogin ? "Login" : "Registro") << " enviado correctamente: "
             << usuario << ", " << contrasena << std::endl;
+		success = true;
     }
     else {
         std::cerr << "Error al enviar " << (isLogin ? "login" : "registro") << std::endl;
@@ -148,7 +149,9 @@ void PantallaLogin::sendAuthPacket(bool isLogin) {
     shouldSendRegister = false;
 }
 
-void PantallaLogin::receiveAuthPacket(bool success) {
+void PantallaLogin::receiveAuthPacket() {
+
+
     sf::Packet packet;
     if (socket.receive(packet) == sf::Socket::Status::Done) {
         bool mensaje;

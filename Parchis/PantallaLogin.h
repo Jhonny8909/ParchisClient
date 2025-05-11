@@ -16,6 +16,7 @@ public:
     std::string hashSHA256(const std::string& password);
 
     std::vector<sf::Sprite> sprites;
+    bool success;
 
 private:
     sf::RenderWindow& window;
@@ -34,9 +35,9 @@ private:
     int eventPressed = 0;
     bool shouldSendLogin = false;
     bool shouldSendRegister = false;
-	bool success;
+	
 
     void handleEvents();
     void sendAuthPacket(bool isLogin);
-    void receiveAuthPacket(bool success);
+    void receiveAuthPacket();
 };

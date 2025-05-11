@@ -1,15 +1,59 @@
-﻿  Main.cpp
-C:\Users\andri\Source\Repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: se ha utilizado una interfaz no de DLL class 'std::runtime_error' como base para la interfaz DLL class 'sf::Exception'
+﻿  Dado.cpp
+C:\Users\jonat\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: se ha utilizado una interfaz no de DLL class 'std::runtime_error' como base para la interfaz DLL class 'sf::Exception'
+  (compilando archivo de origen "Dado.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      vea la declaración de 'std::runtime_error'
+      C:\Users\jonat\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      vea la declaración de 'sf::Exception'
+  
+  LobbyResources.cpp
+C:\Users\jonat\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: se ha utilizado una interfaz no de DLL class 'std::runtime_error' como base para la interfaz DLL class 'sf::Exception'
+  (compilando archivo de origen "LobbyResources.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      vea la declaración de 'std::runtime_error'
+      C:\Users\jonat\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      vea la declaración de 'sf::Exception'
+  
+  Login.cpp
+  LoginResources.cpp
+C:\Users\jonat\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: se ha utilizado una interfaz no de DLL class 'std::runtime_error' como base para la interfaz DLL class 'sf::Exception'
+  (compilando archivo de origen "LoginResources.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      vea la declaración de 'std::runtime_error'
+      C:\Users\jonat\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      vea la declaración de 'sf::Exception'
+  
+  Main.cpp
+C:\Users\jonat\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: se ha utilizado una interfaz no de DLL class 'std::runtime_error' como base para la interfaz DLL class 'sf::Exception'
   (compilando archivo de origen "Main.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
       vea la declaración de 'std::runtime_error'
-      C:\Users\andri\Source\Repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      C:\Users\jonat\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,23):
       vea la declaración de 'sf::Exception'
   
-C:\Users\andri\source\repos\ParchisClient\Parchis\PantallaLobby.h(119,24): warning C4244: 'argumento': conversión de 'float' a 'unsigned int'; posible pérdida de datos
-  (compilando archivo de origen "Main.cpp")
+  PantallaLobby.cpp
+C:\Users\jonat\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: se ha utilizado una interfaz no de DLL class 'std::runtime_error' como base para la interfaz DLL class 'sf::Exception'
+  (compilando archivo de origen "PantallaLobby.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      vea la declaración de 'std::runtime_error'
+      C:\Users\jonat\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      vea la declaración de 'sf::Exception'
   
-C:\Users\andri\source\repos\ParchisClient\Parchis\PantallaLobby.h(124,25): warning C4244: 'argumento': conversión de 'float' a 'unsigned int'; posible pérdida de datos
-  (compilando archivo de origen "Main.cpp")
+  PantallaLogin.cpp
+C:\Users\jonat\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: se ha utilizado una interfaz no de DLL class 'std::runtime_error' como base para la interfaz DLL class 'sf::Exception'
+  (compilando archivo de origen "PantallaLogin.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      vea la declaración de 'std::runtime_error'
+      C:\Users\jonat\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      vea la declaración de 'sf::Exception'
   
-  Parchis.vcxproj -> C:\Users\andri\Source\Repos\ParchisClient\x64\Debug\Parchis.exe
+C:\Users\jonat\source\repos\ParchisClient\Parchis\PantallaLogin.cpp(4,10): error C1083: No se puede abrir el archivo incluir: 'openssl/evp.h': No such file or directory
+  resources.cpp
+C:\Users\jonat\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: se ha utilizado una interfaz no de DLL class 'std::runtime_error' como base para la interfaz DLL class 'sf::Exception'
+  (compilando archivo de origen "resources.cpp")
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      vea la declaración de 'std::runtime_error'
+      C:\Users\jonat\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,23):
+      vea la declaración de 'sf::Exception'
+  
+  Generando código...
