@@ -1,4 +1,4 @@
-//#include "PantallaJuego.h"
+#include "PantallaJuego.h"
 #include "PantallaLobby.h"
 #include <iostream>
 #include "PantallaLogin.h" // si la implementas
@@ -14,7 +14,7 @@ enum class Estado { Login, Lobby, Juego, Ninguno };
 std::unique_ptr<Pantalla> crearPantalla(Estado estado, sf::RenderWindow& window, sf::TcpSocket& socket) {
     switch (estado) {
     case Estado::Lobby: return std::make_unique<LobbyScreen>(window, socket);
-        //case Estado::Juego: return std::make_unique<PantallaJuego>(window);
+    case Estado::Juego: return std::make_unique<PantallaJuego>(window, socket);
     case Estado::Login: return std::make_unique<PantallaLogin>(window, socket);
     default: return nullptr;
     }
@@ -50,11 +50,11 @@ int main() {
 
 
         std::string siguiente = pantalla->nextState();
-        /*if (siguiente == "juego") {
+        if (siguiente == "Juego") {
             estadoActual = Estado::Juego;
-            pantalla = crearPantalla(estadoActual, window);
+            pantalla = crearPantalla(estadoActual, window,socket);
         }
-        else*/ if (siguiente == "Lobby") {
+        else if (siguiente == "Lobby") {
             estadoActual = Estado::Lobby;
             pantalla = crearPantalla(estadoActual, window, socket);
         }

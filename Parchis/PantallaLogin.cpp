@@ -8,7 +8,9 @@
 #define HEIGHT 1920
 #define WIDTH 1080
 
-PantallaLogin::PantallaLogin(sf::RenderWindow& mainWindow, sf::TcpSocket& socket) : window(mainWindow), socket(socket) {
+PantallaLogin::PantallaLogin(sf::RenderWindow& mainWindow, sf::TcpSocket& socket) : window(mainWindow), 
+socket(socket),success(false)
+{
     if (!resources.loadAllResources()) {
         throw std::runtime_error("Failed to load login resources");
     }
@@ -130,43 +132,25 @@ void PantallaLogin::handleEvents() {
 }
 
 void PantallaLogin::sendAuthPacket(bool isLogin) {
-    if ((isLogin && !shouldSendLogin) || (!isLogin && !shouldSendRegister))
-        return;
-
     sf::Packet packet;
-    packet << isLogin << usuario << contrasena;
+    packet << "AUTH" << isLogin << usuario << contrasena; // Añade prefijo "AUTH"
 
-    if (socket.send(packet) == sf::Socket::Status::Done) {
-        std::cout << (isLogin ? "Login" : "Registro") << " enviado correctamente: "
-            << usuario << ", " << contrasena << std::endl;
-		success = true;
+    if (socket.send(packet) != sf::Socket::Status::Done) {
+        std::cerr << "Error al enviar credenciales\n";
+        return;
     }
-    else {
-        std::cerr << "Error al enviar " << (isLogin ? "login" : "registro") << std::endl;
-    }
-
-    shouldSendLogin = false;
-    shouldSendRegister = false;
+    success = true;
 }
 
+
 void PantallaLogin::receiveAuthPacket() {
-
-
     sf::Packet packet;
     if (socket.receive(packet) == sf::Socket::Status::Done) {
-        bool mensaje;
-        if (packet >> mensaje) {
-            std::cout << "Mensaje recibido: " << mensaje << std::endl;
-            if (mensaje == true) {
-                NextWindow = "Lobby";
-            }
-            else {
-                std::cerr << "Error en la autenticación: " << mensaje << std::endl;
-            }
+        std::string tipo;
+        bool exito;
+        if (packet >> tipo >> exito && tipo == "AUTH_RESPONSE") {
+            NextWindow = exito ? "Lobby" : "";
         }
-    }
-    else {
-        std::cerr << "Error al recibir respuesta del servidor." << std::endl;
     }
 }
 

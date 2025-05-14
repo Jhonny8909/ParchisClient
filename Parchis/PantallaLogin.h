@@ -12,9 +12,6 @@ public:
     void update(float dt) override;
     void draw(sf::RenderWindow& window) override;
     std::string nextState() const override;
-
-    std::string hashSHA256(const std::string& password);
-
     std::vector<sf::Sprite> sprites;
     bool success;
 

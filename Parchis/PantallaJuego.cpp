@@ -1,104 +1,64 @@
 #include "PantallaJuego.h"
-#include "JugadorRojo.hpp"
-#include "JugadorAmarillo.hpp"
-#include "JugadorAzul.hpp"
-#include "JugadorVerde.hpp"
-#include "resources.h"  // Usando tu archivo resources.h
+#include <iostream>
 
-PantallaJuego::PantallaJuego(sf::RenderWindow& mainWindow)
-    : window(mainWindow),
-    tablero(),
-    dado(resources), // Correcta inicialización del dado
-    jugadorActual(0),
-    valorDado(1),
-    esperandoLanzamiento(true),
-    esperandoSeleccion(false) {
+using namespace std;
+using namespace sf;
 
-    // Cargar recursos
-    if (!resources.loadAllResources()) {
-        throw std::runtime_error("Error al cargar recursos");
-    }
+PantallaJuego::PantallaJuego(sf::RenderWindow& mainWindow, sf::TcpSocket& socket) : window(mainWindow), socket(socket) {
+	// Inicializa los recursos del juego
+	if (!resources.loadAllResources()) {
+		std::cerr << "Error al cargar recursos del juego" << std::endl;
+		return;
+	}
 
-    // Configurar dado (si usas texturas individuales)
-    dado = Dado({ resources });
-
-    inicializarJugadores();
-
-    // Configurar UI
-    if (!font.openFromFile("assets/fuentes/arial.ttf")) {
-        throw std::runtime_error("Error al cargar fuente");
-    }
-    textoTurno.setFont(font);
-    textoDado.setFont(font);
-    actualizarUI();
+    auto cargarRecursos = [&](sf::Texture& tex, const std::vector<sf::Vector2f>& posiciones) {
+        sprites.reserve(sprites.size() + posiciones.size());
+        for (const auto& pos : posiciones) {
+            sprites.emplace_back(tex);
+            sprites.back().setPosition(pos);
+        }
+        };
+	cargarRecursos(resources.fondo, { {0, 0} });
+	cargarRecursos(resources.tablero,{ {450 ,50} });
+	fichasRojas.reserve(4); // Reservar espacio para 4 fichas rojas
+	fichasRojas.emplace_back(FichaRoja(1, { 100, 100 },resources)); // Ejemplo de ficha roja
+	fichasRojas.emplace_back(FichaRoja(2, { 200, 100 }, resources)); // Ejemplo de ficha roja
+	fichasRojas.emplace_back(FichaRoja(3, { 300, 100 }, resources)); // Ejemplo de ficha roja
+	fichasRojas.emplace_back(FichaRoja(4, { 400, 100 }, resources)); // Ejemplo de ficha roja
 }
 
-void PantallaJuego::inicializarJugadores() {
-    // Solo inicializamos el jugador amarillo
-    jugadores[1] == std::make_unique<JugadorAmarillo>(resources);
-    jugadores[1]->inicializarFichas();  // Asegúrate de llamar esto
 
-    // Los otros jugadores pueden ser nullptr temporalmente
-    jugadores[0] = nullptr;
-    jugadores[2] = nullptr;
-    jugadores[3] = nullptr;
-
-    jugadorActual = 1;  // Empezamos con el jugador amarillo
-}
 
 void PantallaJuego::handleInput(sf::RenderWindow& window) {
-    while (const std::optional event = window.pollEvent()) {
-        if (event->is<sf::Event::Closed>()) window.close();
-
-        if (esperandoLanzamiento &&
-            event->is<sf::Event::KeyPressed>() &&
-            event->getIf<sf::Event::KeyPressed>()->code == sf::Keyboard::Key::Space) {
-
-            dado.lanzar();
-            esperandoLanzamiento = false;
-        }
-
-        if (esperandoSeleccion &&
-            event->is<sf::Event::MouseButtonPressed>() &&
-            event->getIf<sf::Event::MouseButtonPressed>()->button == sf::Mouse::Button::Left) {
-
-            sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-            auto& jugador = jugadores[jugadorActual];
-
-            for (int i = 0; i < jugador->getFichas().size(); ++i) {
-                if (jugador->getFichas()[i].getSprite().getGlobalBounds().contains(mousePos)) {
-                    tablero.moverFicha(jugador->getFichas()[i], dado.getValor(), jugadores);
-                    if (dado.getValor() != 6) cambiarTurno();
-                    break;
-                }
-            }
-        }
-    }
+    
 }
 
+void PantallaJuego::handleEvents() {
+	while (const std::optional event = window.pollEvent()) {
+		if (event->is<sf::Event::Closed>())
+			window.close();
+	}
+}
 void PantallaJuego::update(float dt) {
-    dado.actualizar(dt);
-    if (!dado.estaRodando() && !esperandoLanzamiento) {
-        valorDado = dado.getValor();
-        esperandoSeleccion = true;
-        actualizarUI();
-    }
+    
+}
+
+void PantallaJuego::render() {
+	window.clear();
+	for (const auto& sprite : sprites) {
+		window.draw(sprite);
+	}
+	for (auto& ficha : fichasRojas) {
+		ficha.dibujar(window);  // Dibuja cada ficha
+	}
+
+	
 }
 
 void PantallaJuego::draw(sf::RenderWindow& window) {
-    window.clear();
+	render();
+}
 
-    // Dibujar tablero y fichas
-    tablero.dibujar(window);
-
-    if (jugadores[1]) {
-        jugadores[1]->dibujarFichas(window);
-    }
-
-    // Dibujar UI
-    window.draw(textoTurno);
-    window.draw(textoDado);
-    dado.dibujar(window);
-
-    window.display();
+std::string PantallaJuego::nextState() const {
+    return "";
 }

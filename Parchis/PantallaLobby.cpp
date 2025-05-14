@@ -112,63 +112,49 @@ void LobbyScreen::handleEvents() {
 
         if (crearClick) {
             sf::Packet packet;
-            std::string accion = "CREAR";
-            packet << accion << codigoCrear;
+            packet << "LOBBY" << "CREAR" << codigoCrear; // Estructura consistente
 
             if (socket.send(packet) != sf::Socket::Status::Done) {
-                std::cerr << "Error al enviar el codigo al servidor." << std::endl;
+                std::cerr << "Error al crear lobby\n";
             }
             else {
-                std::cout << "Codigo de sala enviado: " << codigoCrear << std::endl;
+                // Esperar respuesta estructurada
+                sf::Packet respuesta;
+                if (socket.receive(respuesta) == sf::Socket::Status::Done) {
+                    std::string tipo, estado;
+                    if (respuesta >> tipo >> estado && tipo == "LOBBY_RESPONSE") {
+                        if (estado == "CREATED") {
+                            std::cout << "Lobby creado!\n";
+                        }
+                    }
+                }
             }
-
             crearClick = false;
-
-            sf::Packet respuesta;
-            if (socket.receive(respuesta) == sf::Socket::Status::Done) {
-                std::string mensaje;
-                if (respuesta >> mensaje && mensaje == "INICIANDO") {
-                    std::cout << "El servidor indicó que el juego va a iniciar." << std::endl;
-                    //Cambio a Juego
-                }
-                else {
-                    std::cout << "Mensaje del servidor: " << mensaje << std::endl;
-                }
-            }
-            else {
-                std::cerr << "Error al recibir mensaje del servidor." << std::endl;
-            }
         }
 
         if (unirClick) {
             sf::Packet packet;
-            std::string accion = "UNIRSE";
-            packet << accion << codigoUnir;
+            packet << "LOBBY" << "UNIRSE" << codigoUnir;  // Estructura: ["LOBBY", "UNIRSE", código]
 
             if (socket.send(packet) != sf::Socket::Status::Done) {
-                std::cerr << "Error al enviar el codigo al servidor." << std::endl;
+                std::cerr << "Error al enviar solicitud de unión\n";
             }
             else {
-                std::cout << "Codigo de sala enviado: " << codigoUnir << std::endl;
+                // Esperar respuesta estructurada
+                sf::Packet respuesta;
+                if (socket.receive(respuesta) == sf::Socket::Status::Done) {
+                    std::string tipo, estado;
+                    if (respuesta >> tipo >> estado && tipo == "LOBBY_RESPONSE") {
+                        if (estado == "JOINED") {
+                            std::cout << "Unido al lobby exitosamente\n";
+                        }
+                        else if (estado == "FULL") {
+                            std::cerr << "Lobby lleno\n";
+                        }
+                    }
+                }
             }
-
             unirClick = false;
-
-            sf::Packet respuesta;
-            if (socket.receive(respuesta) == sf::Socket::Status::Done) {
-                std::string mensaje;
-                if (respuesta >> mensaje && mensaje == "INICIANDO") {
-                    std::cout << "El servidor indicó que el juego va a iniciar." << std::endl;
-                    //Cambio a Juego
-                }
-                else {
-                    std::cout << "Mensaje del servidor: " << mensaje << std::endl;
-                }
-            }
-            else {
-                std::cerr << "Error al recibir mensaje del servidor." << std::endl;
-            }
-
         }
     }
 }
@@ -224,5 +210,5 @@ void LobbyScreen::draw(sf::RenderWindow& window) {
 }
 
 std::string LobbyScreen::nextState() const {
-    return "";
+    return NextWindow;
 }

@@ -28,6 +28,8 @@ private:
     bool unirClick = false;
     bool showHover = false;
 
+    std::string NextWindow;
+
     // Elementos UI
     sf::RectangleShape box1, box2, boton1, boton2;
     sf::FloatRect textArea1, textArea2, botonArea1, botonArea2;
