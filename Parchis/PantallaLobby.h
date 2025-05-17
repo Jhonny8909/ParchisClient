@@ -15,6 +15,17 @@ public:
     std::vector<sf::Sprite> sprites;  // Cambiado de 'sprite' a 'sprites' por convención
 
 private:
+
+    std::vector<std::unique_ptr<sf::TcpSocket>> peerSockets;
+    bool isHost = false;
+    std::string myIP;
+
+    enum class LobbyState { Idle, Waiting, InGame };
+    LobbyState currentState = LobbyState::Idle;
+
+    void establishP2PConnections(const std::vector<std::string>& peerIPs);
+    void handleGameStart(sf::Packet& packet);
+
     sf::RenderWindow& window;
     LobbyResources resources;
     sf::TcpSocket& socket;

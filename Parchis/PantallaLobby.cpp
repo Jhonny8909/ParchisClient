@@ -4,10 +4,10 @@
 #define WIDTH 1920
 #define HEIGHT 1080
 
-//#define SERVER_PORT 55000
-//const sf::IpAddress SERVER_IP = sf::IpAddress(192,168,0,25);
 
 LobbyScreen::LobbyScreen(sf::RenderWindow& mainWindow, sf::TcpSocket& socket) : window(mainWindow), socket(socket) {
+    myIP = sf::IpAddress::getLocalAddress().value().toString();
+
     if (!resources.loadAll()) {
         std::cerr << "Error al cargar recursos" << std::endl;
         return;
@@ -112,49 +112,34 @@ void LobbyScreen::handleEvents() {
 
         if (crearClick) {
             sf::Packet packet;
-            packet << "LOBBY" << "CREAR" << codigoCrear; // Estructura consistente
+            packet << "LOBBY" << "CREAR" << codigoCrear << myIP; // Incluye tu IP
 
-            if (socket.send(packet) != sf::Socket::Status::Done) {
-                std::cerr << "Error al crear lobby\n";
+            if (socket.send(packet) == sf::Socket::Status::Done) {
+                isHost = true;
+                currentState = LobbyState::Waiting;
+                std::cout << "Esperando jugadores...\n";
             }
-            else {
-                // Esperar respuesta estructurada
-                sf::Packet respuesta;
-                if (socket.receive(respuesta) == sf::Socket::Status::Done) {
-                    std::string tipo, estado;
-                    if (respuesta >> tipo >> estado && tipo == "LOBBY_RESPONSE") {
-                        if (estado == "CREATED") {
-                            std::cout << "Lobby creado!\n";
-                        }
-                    }
-                }
-            }
-            crearClick = false;
         }
 
         if (unirClick) {
             sf::Packet packet;
-            packet << "LOBBY" << "UNIRSE" << codigoUnir;  // Estructura: ["LOBBY", "UNIRSE", código]
+            packet << "LOBBY" << "UNIRSE" << codigoUnir << myIP;
 
-            if (socket.send(packet) != sf::Socket::Status::Done) {
-                std::cerr << "Error al enviar solicitud de unión\n";
+            if (socket.send(packet) == sf::Socket::Status::Done) {
+                currentState = LobbyState::Waiting;
+                std::cout << "Solicitando unión...\n";
             }
-            else {
-                // Esperar respuesta estructurada
-                sf::Packet respuesta;
-                if (socket.receive(respuesta) == sf::Socket::Status::Done) {
-                    std::string tipo, estado;
-                    if (respuesta >> tipo >> estado && tipo == "LOBBY_RESPONSE") {
-                        if (estado == "JOINED") {
-                            std::cout << "Unido al lobby exitosamente\n";
-                        }
-                        else if (estado == "FULL") {
-                            std::cerr << "Lobby lleno\n";
-                        }
-                    }
-                }
+        }
+
+        // Manejo de respuestas del servidor (añade esto al final de handleEvents)
+        sf::Packet serverPacket;
+        if (socket.receive(serverPacket) == sf::Socket::Status::Done) {
+            std::string packetType;
+            serverPacket >> packetType;
+
+            if (packetType == "GAME_START") {
+                handleGameStart(serverPacket);
             }
-            unirClick = false;
         }
     }
 }
@@ -211,4 +196,31 @@ void LobbyScreen::draw(sf::RenderWindow& window) {
 
 std::string LobbyScreen::nextState() const {
     return NextWindow;
+}
+
+void LobbyScreen::handleGameStart(sf::Packet& packet) {
+    std::string role;
+    packet >> role;
+
+    std::vector<std::string> peerIPs;
+    std::string ip;
+    while (packet >> ip) {
+        peerIPs.push_back(ip);
+    }
+
+    establishP2PConnections(peerIPs);
+    currentState = LobbyState::InGame;
+    NextWindow = "game"; // Cambia a la pantalla de juego
+}
+
+void LobbyScreen::establishP2PConnections(const std::vector<std::string>& peerIPs) {
+    for (const auto& ip : peerIPs) {
+        auto peerSocket = std::make_unique<sf::TcpSocket>();
+        std::optional<sf::IpAddress> peerAddress = sf::IpAddress::resolve(ip);
+
+        if (peerAddress && peerSocket->connect(*peerAddress, 53000) == sf::Socket::Status::Done) {
+            peerSockets.push_back(std::move(peerSocket));
+            std::cout << "Conectado a " << ip << std::endl;
+        }
+    }
 }

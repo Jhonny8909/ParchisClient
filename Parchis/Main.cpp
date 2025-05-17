@@ -2,6 +2,7 @@
 #include "PantallaLobby.h"
 #include <iostream>
 #include "PantallaLogin.h" // si la implementas
+#include <SFML/Graphics.hpp>
 
 #define SERVER_PORT 55000
 const sf::IpAddress SERVER_IP = sf::IpAddress(127, 0, 0, 1);
@@ -39,6 +40,7 @@ int main() {
     std::unique_ptr<Pantalla> pantalla = crearPantalla(estadoActual, window, socket);
 
     while (window.isOpen()) {
+
         float dt = clock.restart().asSeconds();
 
         pantalla->handleInput(window);

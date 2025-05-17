@@ -16,6 +16,7 @@ public:
     bool success;
 
 private:
+
     sf::RenderWindow& window;
     LoginResources resources;
     sf::TcpSocket& socket;

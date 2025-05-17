@@ -5,12 +5,11 @@
 #include <openssl/sha.h>
 #include <sstream>
 
-#define HEIGHT 1920
-#define WIDTH 1080
-
-PantallaLogin::PantallaLogin(sf::RenderWindow& mainWindow, sf::TcpSocket& socket) : window(mainWindow), 
-socket(socket),success(false)
+PantallaLogin::PantallaLogin(sf::RenderWindow& mainWindow, sf::TcpSocket& socket) : window(mainWindow),
+socket(socket), success(false)
 {
+    socket.setBlocking(false);
+
     if (!resources.loadAllResources()) {
         throw std::runtime_error("Failed to load login resources");
     }
@@ -33,11 +32,11 @@ socket(socket),success(false)
     cargarFichas(resources.registerButtonHover, { {250, 635} });
 
     loginButtonRect.setSize({ 635, 173 });
-    loginButtonRect.setPosition({ 1000, 635});
+    loginButtonRect.setPosition({ 1000, 635 });
     loginButtonRect.setFillColor(sf::Color::Transparent);
 
     registerButtonRect.setSize({ 635, 173 });
-    registerButtonRect.setPosition({ 250, 635});
+    registerButtonRect.setPosition({ 250, 635 });
     registerButtonRect.setFillColor(sf::Color::Transparent);
 }
 
@@ -103,20 +102,20 @@ void PantallaLogin::handleEvents() {
                 resources.texts[0].setString(std::string(contrasena));
             }
         }
-        if(eventPressed==1 || eventPressed==2){
+        if (eventPressed == 1 || eventPressed == 2) {
             if (const auto* mouseButton = event->getIf<sf::Event::MouseButtonPressed>()) {
                 if (mouseButton->button == sf::Mouse::Button::Left) {
                     sf::Vector2f mousePos = window.mapPixelToCoords({ mouseButton->position.x, mouseButton->position.y });
                     if (loginButtonRect.getGlobalBounds().contains(mousePos)) {
                         shouldSendLogin = true;
                         loginButtonRect.setFillColor(sf::Color::Red);
-                        eventPressed = 2;// bloquea escritura después
+                        eventPressed = 2;// bloquea escritura despues
                         std::cout << "Login enviado" << std::endl;
                     }
                     else if (registerButtonRect.getGlobalBounds().contains(mousePos)) {
                         registerButtonRect.setFillColor(sf::Color::Red);
                         shouldSendRegister = true;
-                        eventPressed = 2; // bloquea escritura después
+                        eventPressed = 2; // bloquea escritura despues
                         std::cout << "register enviado" << std::endl;
                     }
                 }
@@ -127,7 +126,7 @@ void PantallaLogin::handleEvents() {
             }
 
         }
-        
+
     }
 }
 
@@ -150,6 +149,7 @@ void PantallaLogin::receiveAuthPacket() {
         bool exito;
         if (packet >> tipo >> exito && tipo == "AUTH_RESPONSE") {
             NextWindow = exito ? "Lobby" : "";
+            std::cerr << exito << std::endl;
         }
     }
 }
