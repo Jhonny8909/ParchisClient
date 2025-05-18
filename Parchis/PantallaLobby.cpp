@@ -248,28 +248,32 @@ void LobbyScreen::handleGameStart(sf::Packet& packet) {
     std::cout << "[GAME] Game starting. My role: " << role << std::endl;
 
     if (role == "PEER") {
+        // Peer debe prepararse para aceptar conexiones
         sf::TcpListener listener;
-        if (listener.listen(53000) == sf::Socket::Status::Done) {
-            auto newSocket = std::make_unique<sf::TcpSocket>();
-            if (listener.accept(*newSocket) == sf::Socket::Status::Done) {
-                peerSockets.push_back(std::move(newSocket));
-                std::cout << "[NETWORK] Conexión P2P establecida con host" << std::endl;
-            }
+        if (listener.listen(53000) != sf::Socket::Status::Done) {
+            std::cerr << "[ERROR] No se pudo abrir puerto 53000" << std::endl;
+            return;
+        }
+
+        std::cout << "[P2P] Esperando conexión del host en puerto 53000..." << std::endl;
+        auto hostSocket = std::make_unique<sf::TcpSocket>();
+        if (listener.accept(*hostSocket) == sf::Socket::Status::Done) {
+            peerSockets.push_back(std::move(hostSocket));
+            std::cout << "[P2P] Conexión establecida con host" << std::endl;
         }
     }
     else if (role == "HOST") {
+        // Lógica normal para host
         std::vector<std::string> peerIPs;
         std::string ip;
         while (packet >> ip) {
             peerIPs.push_back(ip);
-            std::cout << "[NETWORK] Peer IP to connect: " << ip << std::endl;
         }
         establishP2PConnections(peerIPs);
     }
 
     currentState = LobbyState::InGame;
     NextWindow = "Juego";
-    std::cout << "[LOBBY] Transitioning to game screen" << std::endl;
 }
 
 void LobbyScreen::establishP2PConnections(const std::vector<std::string>& peerIPs) {
