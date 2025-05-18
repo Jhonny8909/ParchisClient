@@ -6,10 +6,18 @@
 
 
 LobbyScreen::LobbyScreen(sf::RenderWindow& mainWindow, sf::TcpSocket& socket) : window(mainWindow), socket(socket) {
-    myIP = sf::IpAddress::getLocalAddress().value().toString();
+    auto localAddress = sf::IpAddress::getLocalAddress();
+    if (!localAddress) {
+        std::cerr << "[ERROR] No se pudo obtener la dirección local" << std::endl;
+        myIP = "127.0.0.1";
+    }
+    else {
+        myIP = localAddress->toString();
+    }
+    std::cout << "[LOBBY] Initializing lobby screen. Local IP: " << myIP << std::endl;
 
     if (!resources.loadAll()) {
-        std::cerr << "Error al cargar recursos" << std::endl;
+        std::cerr << "[ERROR] Failed to load resources" << std::endl;
         return;
     }
 
@@ -85,26 +93,36 @@ void LobbyScreen::handleEvents() {
                 crearClick = botonArea1.contains(mousePosF);
                 unirClick = botonArea2.contains(mousePosF);
 
-                std::cout << "Clic en: " << mousePosF.x << ", " << mousePosF.y << std::endl;
+                std::cout << "[INPUT] Click at: " << mousePosF.x << ", " << mousePosF.y << std::endl;
+                if (inputCrearActivo) std::cout << "[INPUT] Focus on CREATE ROOM code field" << std::endl;
+                if (inputUnirActivo) std::cout << "[INPUT] Focus on JOIN ROOM code field" << std::endl;
             }
         }
 
         if (const auto* textEvent = event->getIf<sf::Event::TextEntered>()) {
             if (inputCrearActivo) {
                 if (textEvent->unicode == '\b') {
-                    if (!codigoCrear.empty()) codigoCrear.pop_back();
+                    if (!codigoCrear.empty()) {
+                        codigoCrear.pop_back();
+                        std::cout << "[INPUT] Backspace in CREATE field. Current code: " << codigoCrear << std::endl;
+                    }
                 }
                 else if (textEvent->unicode < 128 && textEvent->unicode != '\r') {
                     codigoCrear += static_cast<char>(textEvent->unicode);
+                    std::cout << "[INPUT] Typed in CREATE field. Current code: " << codigoCrear << std::endl;
                 }
                 resources.texts[0].setString(codigoCrear);
             }
             else if (inputUnirActivo) {
                 if (textEvent->unicode == '\b') {
-                    if (!codigoUnir.empty()) codigoUnir.pop_back();
+                    if (!codigoUnir.empty()) {
+                        codigoUnir.pop_back();
+                        std::cout << "[INPUT] Backspace in JOIN field. Current code: " << codigoUnir << std::endl;
+                    }
                 }
                 else if (textEvent->unicode < 128 && textEvent->unicode != '\r') {
                     codigoUnir += static_cast<char>(textEvent->unicode);
+                    std::cout << "[INPUT] Typed in JOIN field. Current code: " << codigoUnir << std::endl;
                 }
                 resources.texts[1].setString(codigoUnir);
             }
@@ -112,33 +130,61 @@ void LobbyScreen::handleEvents() {
 
         if (crearClick) {
             sf::Packet packet;
-            packet << "LOBBY" << "CREAR" << codigoCrear << myIP; // Incluye tu IP
+            packet << "LOBBY" << "CREAR" << codigoCrear << myIP;
+            std::cout << "[NETWORK] Sending CREATE ROOM request to server. Code: " << codigoCrear << " | My IP: " << myIP << std::endl;
 
             if (socket.send(packet) == sf::Socket::Status::Done) {
                 isHost = true;
                 currentState = LobbyState::Waiting;
-                std::cout << "Esperando jugadores...\n";
+                std::cout << "[LOBBY] Now waiting for players to join room: " << codigoCrear << std::endl;
+                std::cout << "[NETWORK] CREATE ROOM packet sent successfully" << std::endl;
+            }
+            else {
+                std::cerr << "[ERROR] Failed to send CREATE ROOM packet" << std::endl;
             }
         }
 
         if (unirClick) {
             sf::Packet packet;
             packet << "LOBBY" << "UNIRSE" << codigoUnir << myIP;
+            std::cout << "[NETWORK] Sending JOIN ROOM request to server. Code: " << codigoUnir << " | My IP: " << myIP << std::endl;
 
             if (socket.send(packet) == sf::Socket::Status::Done) {
                 currentState = LobbyState::Waiting;
-                std::cout << "Solicitando unión...\n";
+                std::cout << "[LOBBY] Requesting to join room: " << codigoUnir << std::endl;
+                std::cout << "[NETWORK] JOIN ROOM packet sent successfully" << std::endl;
+            }
+            else {
+                std::cerr << "[ERROR] Failed to send JOIN ROOM packet" << std::endl;
             }
         }
 
-        // Manejo de respuestas del servidor (añade esto al final de handleEvents)
+        // Handle server responses
         sf::Packet serverPacket;
         if (socket.receive(serverPacket) == sf::Socket::Status::Done) {
             std::string packetType;
             serverPacket >> packetType;
+            std::cout << "[NETWORK] Received packet from server. Type: " << packetType << std::endl;
 
             if (packetType == "GAME_START") {
+                std::cout << "[LOBBY] Game start signal received from server" << std::endl;
                 handleGameStart(serverPacket);
+            }
+            else if (packetType == "PLAYER_JOINED") {
+                std::string joiningPlayerIP;
+                serverPacket >> joiningPlayerIP;
+                std::cout << "[LOBBY] New player joined the room: " << joiningPlayerIP << std::endl;
+            }
+            else if (packetType == "ROOM_CREATED") {
+                std::cout << "[LOBBY] Room successfully created on server" << std::endl;
+            }
+            else if (packetType == "ROOM_JOINED") {
+                std::cout << "[LOBBY] Successfully joined room on server" << std::endl;
+            }
+            else if (packetType == "ERROR") {
+                std::string errorMsg;
+                serverPacket >> errorMsg;
+                std::cerr << "[ERROR] Server error: " << errorMsg << std::endl;
             }
         }
     }
@@ -153,8 +199,6 @@ void LobbyScreen::update(float dt) {
     box2.setOutlineColor(inputUnirActivo ? sf::Color::Green : sf::Color::White);
     boton1.setOutlineColor(crearClick ? sf::Color::Green : sf::Color::White);
     boton2.setOutlineColor(unirClick ? sf::Color::Green : sf::Color::White);
-
-
 }
 
 void LobbyScreen::render() {
@@ -201,26 +245,43 @@ std::string LobbyScreen::nextState() const {
 void LobbyScreen::handleGameStart(sf::Packet& packet) {
     std::string role;
     packet >> role;
+    std::cout << "[GAME] Game starting. My role: " << role << std::endl;
 
     std::vector<std::string> peerIPs;
     std::string ip;
     while (packet >> ip) {
         peerIPs.push_back(ip);
+        std::cout << "[NETWORK] Peer IP to connect: " << ip << std::endl;
     }
 
     establishP2PConnections(peerIPs);
     currentState = LobbyState::InGame;
-    NextWindow = "game"; // Cambia a la pantalla de juego
+    NextWindow = "Juego";
+    std::cout << "[LOBBY] Transitioning to game screen" << std::endl;
 }
 
 void LobbyScreen::establishP2PConnections(const std::vector<std::string>& peerIPs) {
+    std::cout << "[NETWORK] Establishing P2P connections with " << peerIPs.size() << " peers" << std::endl;
+
     for (const auto& ip : peerIPs) {
         auto peerSocket = std::make_unique<sf::TcpSocket>();
-        std::optional<sf::IpAddress> peerAddress = sf::IpAddress::resolve(ip);
+        auto peerAddress = sf::IpAddress::resolve(ip);
 
-        if (peerAddress && peerSocket->connect(*peerAddress, 53000) == sf::Socket::Status::Done) {
+        if (!peerAddress) {
+            std::cerr << "[ERROR] Could not resolve peer IP: " << ip << std::endl;
+            continue;
+        }
+
+        // Intento de conexión con timeout
+        sf::Socket::Status status = peerSocket->connect(*peerAddress, 53000, sf::seconds(5));
+
+        if (status == sf::Socket::Status::Done) {
             peerSockets.push_back(std::move(peerSocket));
-            std::cout << "Conectado a " << ip << std::endl;
+            std::cout << "[NETWORK] Successfully connected to peer: " << ip << std::endl;
+        }
+        else {
+            std::cerr << "[ERROR] Failed to connect to peer: " << ip
+                << " (Error: " << static_cast<int>(status) << ")" << std::endl;
         }
     }
 }

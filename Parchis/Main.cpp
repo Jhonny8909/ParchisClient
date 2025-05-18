@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 
 #define SERVER_PORT 55000
-const sf::IpAddress SERVER_IP = sf::IpAddress(127, 0, 0, 1);
+const sf::IpAddress SERVER_IP = sf::IpAddress(192,168,0,22);
 
 
 
@@ -36,7 +36,8 @@ int main() {
 
     sf::Clock clock;
 
-    Estado estadoActual = Estado::Login;
+    Estado estadoActual = Estado::Login
+;
     std::unique_ptr<Pantalla> pantalla = crearPantalla(estadoActual, window, socket);
 
     while (window.isOpen()) {

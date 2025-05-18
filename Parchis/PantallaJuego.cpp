@@ -21,7 +21,7 @@ PantallaJuego::PantallaJuego(sf::RenderWindow& mainWindow, sf::TcpSocket& socket
 	cargarRecursos(resources.fondo, { {0, 0} });
 	cargarRecursos(resources.tablero,{ {450 ,50} });
 	fichasRojas.reserve(4); // Reservar espacio para 4 fichas rojas
-	fichasRojas.emplace_back(FichaRoja(1, { 100, 100 },resources)); // Ejemplo de ficha roja
+	fichasRojas.emplace_back(FichaRoja(1, { 880,130 },resources)); // Ejemplo de ficha roja
 	fichasRojas.emplace_back(FichaRoja(2, { 200, 100 }, resources)); // Ejemplo de ficha roja
 	fichasRojas.emplace_back(FichaRoja(3, { 300, 100 }, resources)); // Ejemplo de ficha roja
 	fichasRojas.emplace_back(FichaRoja(4, { 400, 100 }, resources)); // Ejemplo de ficha roja
