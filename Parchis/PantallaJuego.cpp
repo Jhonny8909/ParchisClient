@@ -4,13 +4,15 @@
 using namespace std;
 using namespace sf;
 
-PantallaJuego::PantallaJuego(sf::RenderWindow& mainWindow, sf::TcpSocket& socket) : window(mainWindow), socket(socket) {
-	// Inicializa los recursos del juego
+
+PantallaJuego::PantallaJuego(sf::RenderWindow& mainWindow, sf::TcpSocket& socket)
+	: window(mainWindow), socket(socket){
+
 	if (!resources.loadAllResources()) {
 		std::cerr << "Error al cargar recursos del juego" << std::endl;
 		return;
 	}
-
+		 
     auto cargarRecursos = [&](sf::Texture& tex, const std::vector<sf::Vector2f>& posiciones) {
         sprites.reserve(sprites.size() + posiciones.size());
         for (const auto& pos : posiciones) {
@@ -18,13 +20,24 @@ PantallaJuego::PantallaJuego(sf::RenderWindow& mainWindow, sf::TcpSocket& socket
             sprites.back().setPosition(pos);
         }
         };
+
+	auto cargarDado = [&](sf::Texture& tex, const std::vector<sf::Vector2f>& posiciones) {
+		Dado.reserve(Dado.size() + posiciones.size());
+		for (const auto& pos : posiciones) {
+			Dado.emplace_back(tex);
+			Dado.back().setPosition(pos);
+		}
+		};
+
 	cargarRecursos(resources.fondo, { {0, 0} });
 	cargarRecursos(resources.tablero,{ {450 ,50} });
+	cargarDado(resources.dado1, { { 0, 0 } });
 	fichasRojas.reserve(4); // Reservar espacio para 4 fichas rojas
-	fichasRojas.emplace_back(FichaRoja(1, { 880,130 },resources)); // Ejemplo de ficha roja
+	fichasRojas.emplace_back(FichaRoja(1, { 880, 130 }, resources)); // Ejemplo de ficha roja
 	fichasRojas.emplace_back(FichaRoja(2, { 200, 100 }, resources)); // Ejemplo de ficha roja
 	fichasRojas.emplace_back(FichaRoja(3, { 300, 100 }, resources)); // Ejemplo de ficha roja
 	fichasRojas.emplace_back(FichaRoja(4, { 400, 100 }, resources)); // Ejemplo de ficha roja
+	
 }
 
 
@@ -48,15 +61,46 @@ void PantallaJuego::render() {
 	for (const auto& sprite : sprites) {
 		window.draw(sprite);
 	}
+
+
 	for (auto& ficha : fichasRojas) {
 		ficha.dibujar(window);  // Dibuja cada ficha
 	}
-
-	
+	drawDado(dadoValue);
 }
 
 void PantallaJuego::draw(sf::RenderWindow& window) {
 	render();
+}
+
+void PantallaJuego::drawDado(int dadoValue) {
+	switch (dadoValue)
+	{
+		case 1:
+			window.draw(Dado[0]);
+			break;
+		case 2:
+			window.draw(Dado[1]);
+			break;
+		case 3:
+			window.draw(Dado[2]);
+			break;
+		case 4:
+			window.draw(Dado[3]);
+			break;
+		case 5:
+			window.draw(Dado[4]);
+			break;
+		case 6:
+			window.draw(Dado[5]);
+			break;
+	default:
+		break;
+	}
+}
+
+void PantallaJuego::LanzarDado() {
+
 }
 
 std::string PantallaJuego::nextState() const {

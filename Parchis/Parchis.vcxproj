@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Dado.hpp" />
     <ClInclude Include="FichaRoja.h" />
     <ClInclude Include="LobbyResources.h" />
     <ClInclude Include="LoginResources.h" />
@@ -28,9 +27,9 @@
     <ClInclude Include="PantallaLobby.h" />
     <ClInclude Include="PantallaLogin.h" />
     <ClInclude Include="resources.h" />
+    <ClInclude Include="Tablero.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Dado.cpp" />
     <ClCompile Include="FichaRoja.cpp" />
     <ClCompile Include="LobbyResources.cpp" />
     <ClCompile Include="LoginResources.cpp" />

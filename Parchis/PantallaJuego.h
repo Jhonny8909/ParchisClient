@@ -2,7 +2,6 @@
 #include "Pantalla.h"
 #include <SFML/Network.hpp>
 #include "resources.h"
-#include "Dado.hpp"
 #include "FichaRoja.h"
 
 
@@ -15,16 +14,21 @@ public:
     std::string nextState() const override;
 
     std::vector<sf::Sprite> sprites;
-
+    std::vector<sf::Sprite> Dado;
 	std::vector<FichaRoja> fichasRojas; // Vector para almacenar las fichas
-
-    Dado Dado;
+    
 
 private:
     GameResources resources;
     sf::RenderWindow& window;
-    sf::TcpSocket& socket; 
+    sf::TcpSocket& socket;
 
-    void handleEvents(); 
-    void render(); 
+    int dadoValue; // Valor del dado lanzado
+   
+
+    void handleEvents();
+    void render();
+	void LanzarDado();
+    void drawDado(int dadoValue);
+
 };

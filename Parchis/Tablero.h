@@ -5,9 +5,6 @@
 class tablero {
 public:
 
-#include <SFML/System.hpp>
-#include <array>
-
     const std::array<sf::Vector2f, 40> positions = {
         sf::Vector2f(880.f, 130.f),    // 1
         sf::Vector2f(880.f, 190.f),    // 2

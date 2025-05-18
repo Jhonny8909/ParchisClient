@@ -39,9 +39,6 @@
     <ClInclude Include="LobbyResources.h">
       <Filter>Archivos de recursos\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="Dado.hpp">
-      <Filter>Archivos de recursos\Core</Filter>
-    </ClInclude>
     <ClInclude Include="PantallaLogin.h">
       <Filter>Archivos de recursos\Ventanas</Filter>
     </ClInclude>
@@ -51,6 +48,9 @@
     <ClInclude Include="FichaRoja.h">
       <Filter>Archivos de recursos\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Tablero.h">
+      <Filter>Archivos de recursos\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -58,9 +58,6 @@
     </ClCompile>
     <ClCompile Include="resources.cpp">
       <Filter>Archivos de recursos\Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="Dado.cpp">
-      <Filter>Archivos de recursos\Core</Filter>
     </ClCompile>
     <ClCompile Include="LobbyResources.cpp">
       <Filter>Archivos de recursos\Resources</Filter>

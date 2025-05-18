@@ -36,7 +36,7 @@ int main() {
 
     sf::Clock clock;
 
-    Estado estadoActual = Estado::Login
+    Estado estadoActual = Estado::Juego
 ;
     std::unique_ptr<Pantalla> pantalla = crearPantalla(estadoActual, window, socket);
 
