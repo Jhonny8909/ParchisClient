@@ -247,14 +247,26 @@ void LobbyScreen::handleGameStart(sf::Packet& packet) {
     packet >> role;
     std::cout << "[GAME] Game starting. My role: " << role << std::endl;
 
-    std::vector<std::string> peerIPs;
-    std::string ip;
-    while (packet >> ip) {
-        peerIPs.push_back(ip);
-        std::cout << "[NETWORK] Peer IP to connect: " << ip << std::endl;
+    if (role == "PEER") {
+        sf::TcpListener listener;
+        if (listener.listen(53000) == sf::Socket::Status::Done) {
+            auto newSocket = std::make_unique<sf::TcpSocket>();
+            if (listener.accept(*newSocket) == sf::Socket::Status::Done) {
+                peerSockets.push_back(std::move(newSocket));
+                std::cout << "[NETWORK] Conexión P2P establecida con host" << std::endl;
+            }
+        }
+    }
+    else if (role == "HOST") {
+        std::vector<std::string> peerIPs;
+        std::string ip;
+        while (packet >> ip) {
+            peerIPs.push_back(ip);
+            std::cout << "[NETWORK] Peer IP to connect: " << ip << std::endl;
+        }
+        establishP2PConnections(peerIPs);
     }
 
-    establishP2PConnections(peerIPs);
     currentState = LobbyState::InGame;
     NextWindow = "Juego";
     std::cout << "[LOBBY] Transitioning to game screen" << std::endl;
@@ -272,16 +284,12 @@ void LobbyScreen::establishP2PConnections(const std::vector<std::string>& peerIP
             continue;
         }
 
-        // Intento de conexión con timeout
-        sf::Socket::Status status = peerSocket->connect(*peerAddress, 53000, sf::seconds(5));
-
-        if (status == sf::Socket::Status::Done) {
+        if (peerSocket->connect(*peerAddress, 53000, sf::seconds(5)) == sf::Socket::Status::Done) {
             peerSockets.push_back(std::move(peerSocket));
             std::cout << "[NETWORK] Successfully connected to peer: " << ip << std::endl;
         }
         else {
-            std::cerr << "[ERROR] Failed to connect to peer: " << ip
-                << " (Error: " << static_cast<int>(status) << ")" << std::endl;
+            std::cerr << "[ERROR] Failed to connect to peer: " << ip << std::endl;
         }
     }
 }
