@@ -147,6 +147,7 @@ void PantallaLogin::receiveAuthPacket() {
     if (socket.receive(packet) == sf::Socket::Status::Done) {
         std::string tipo;
         bool exito;
+
         if (packet >> tipo >> exito && tipo == "AUTH_RESPONSE") {
             NextWindow = exito ? "Lobby" : "";
             std::cerr << exito << std::endl;

@@ -1,14 +1,27 @@
 #include "FichaRoja.h"
+#include <cmath>
 
 FichaRoja::FichaRoja(int id, const sf::Vector2f& posicionInicial, GameResources& res)
-    : id(id),
-    casillaActual(-1),
-    enMeta(false),
-    resources(res),  // Inicializa la referencia a recursos
-    sprite(res.fichaRoja) {  // Inicializa el sprite con la textura
-
-    sprite.setPosition(posicionInicial);  // Establece la posición
+    : id(id), resources(res), sprite(res.fichaRoja) {
+    sf::FloatRect bounds = sprite.getLocalBounds();
+    sprite.setOrigin(bounds.size / 2.f);
+    sprite.setPosition(posicionInicial);
+    radio = bounds.size.x / 2.f;
 }
+
+void FichaRoja::moverEnTablero(int nuevoIndice, const std::array<sf::Vector2f, 40>& positions) {
+    if (nuevoIndice >= 0 && nuevoIndice < static_cast<int>(positions.size())) {
+        indiceTablero = nuevoIndice;
+        sprite.setPosition(positions[static_cast<size_t>(nuevoIndice)]);
+    }
+}
+
+bool FichaRoja::contienePunto(const sf::Vector2i& punto) const {
+    sf::Vector2f centro = sprite.getPosition();
+    float distancia = std::hypot(punto.x - centro.x, punto.y - centro.y);
+    return distancia <= radio;
+}
+
 
 void FichaRoja::dibujar(sf::RenderWindow& ventana) const {
     ventana.draw(sprite);
