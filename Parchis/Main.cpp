@@ -47,7 +47,7 @@ int main() {
         float dt = clock.restart().asSeconds();
 
         pantalla->handleInput(window);
-        pantalla->update(dt);  // Aquí se procesa la respuesta
+        pantalla->update(dt);
 
         window.clear();
         pantalla->draw(window);
@@ -55,6 +55,7 @@ int main() {
 
         std::string siguienteEstado = pantalla->nextState();
         if (!siguienteEstado.empty()) {
+            std::cout << "Cambiando a estado: " << siguienteEstado << std::endl;
             estadoActual = (siguienteEstado == "Login") ? Estado::Login :
                 (siguienteEstado == "Lobby") ? Estado::Lobby :
                 Estado::Juego;
@@ -62,6 +63,5 @@ int main() {
             pantalla = crearPantalla(estadoActual, window, socket);
         }
     }
-
     return 0;
 }

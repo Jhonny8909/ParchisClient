@@ -2,6 +2,7 @@
 #include "LobbyResources.h"
 #include "Pantalla.h"
 #include <SFML/Network.hpp>
+#include <functional>
 
 class LobbyScreen : public Pantalla {
 public:
@@ -16,6 +17,7 @@ private:
     sf::RenderWindow& window;
     LobbyResources resources;
     sf::TcpSocket& socket;
+    std::unordered_map<std::string, std::function<void(sf::Packet&)>> networkHandlers;
 
     std::vector<sf::Sprite> sprites;
     sf::RectangleShape createBox;
@@ -25,6 +27,7 @@ private:
 
     std::string createCode;
     std::string joinCode;
+	std::string currentLobbyCode;
     bool createActive = false;
     bool joinActive = false;
     bool waitingForResponse = false;

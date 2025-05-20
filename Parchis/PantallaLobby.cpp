@@ -8,6 +8,36 @@ LobbyScreen::LobbyScreen(sf::RenderWindow& mainWindow, sf::TcpSocket& socket)
         return;
     }
 
+    networkHandlers = {
+        {"LOBBY_RESPONSE", [this](sf::Packet& packet) {
+            std::string status;
+            std::string code;
+            if(packet >> status >> code) {
+                if(status == "CREATED") {
+                    currentLobbyCode = code;
+                    std::cout << "Lobby creado exitosamente: " << code << std::endl;
+                } else if(status == "JOINED") {
+                    currentLobbyCode = code;
+                    std::cout << "Unido al lobby: " << code << std::endl;
+                } else {
+                    std::cerr << "Error en lobby: " << status << std::endl;
+                }
+                waitingForResponse = false;
+            }
+        }},
+        {"LOBBY_UPDATE", [this](sf::Packet& packet) {
+            int playerCount;
+            if(packet >> playerCount) {
+                std::cout << "Jugadores en lobby: " << playerCount << std::endl;
+            }
+        }},
+        {"GAME_START", [this](sf::Packet& packet) {
+            std::cout << "[CLIENTE] Recibido GAME_START - Iniciando juego" << std::endl;
+            gameStarting = true;
+            nextWindow = "Juego";
+        }},
+    };
+
     // Carga de sprites
     auto loadSprites = [&](const sf::Texture& tex, const std::vector<sf::Vector2f>& positions) {
         for (const auto& pos : positions) {
@@ -135,52 +165,60 @@ void LobbyScreen::sendLobbyPacket(const std::string& action, const std::string& 
 }
 
 void LobbyScreen::update(float dt) {
-    if (waitingForResponse) {
-        checkServerResponse();
-    }
+    // Verificar actualizaciones del servidor
+    checkServerResponse();
+
 }
+
 
 void LobbyScreen::checkServerResponse() {
     sf::Packet packet;
-    if (socket.receive(packet) == sf::Socket::Status::Done) {
-        std::string packetType;
-        if (packet >> packetType) {
-            if (packetType == "LOBBY_RESPONSE") {
-                std::string status;
-                if (packet >> status) {
-                    waitingForResponse = false;
-                    if (status == "CREATED" || status == "JOINED") {
-                        // Esperar inicio de juego
-                    }
+    sf::Socket::Status status;
+
+    // Cambiar temporalmente a modo bloqueante con timeout
+    socket.setBlocking(true);
+    sf::SocketSelector selector;
+    selector.add(socket);
+
+    if (selector.wait(sf::milliseconds(100))) { // Espera 100ms
+        status = socket.receive(packet);
+        if (status == sf::Socket::Status::Done) {
+            std::string packetType;
+            if (packet >> packetType) {
+                auto handler = networkHandlers.find(packetType);
+                if (handler != networkHandlers.end()) {
+                    handler->second(packet);
                 }
-            }
-            else if (packetType == "GAME_START") {
-                gameStarting = true;
-                nextWindow = "Juego";
-                waitingForResponse = false;
             }
         }
     }
+    socket.setBlocking(false);
 }
 
 void LobbyScreen::render() {
     window.clear();
 
-    // Dibujar todos los sprites
+    // Dibujar fondo y elementos UI
     for (const auto& sprite : sprites) {
         window.draw(sprite);
     }
 
-    // Dibujar cajas y botones
+    // Dibujar cajas de texto y botones
     window.draw(createBox);
     window.draw(joinBox);
     window.draw(createButton);
     window.draw(joinButton);
 
-    // Dibujar textos
+    // Dibujar textos (incluyendo el estado del lobby)
     for (const auto& text : resources.texts) {
         window.draw(text);
     }
+
+    // Dibujar códigos ingresados
+    resources.texts[0].setString(createCode);
+    resources.texts[1].setString(joinCode);
+    window.draw(resources.texts[0]);
+    window.draw(resources.texts[1]);
 }
 
 void LobbyScreen::draw(sf::RenderWindow& window) {
