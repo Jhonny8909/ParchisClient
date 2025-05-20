@@ -1,23 +1,30 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <array>
 #include "resources.h"
 
 class FichaRoja {
 protected:
     sf::Sprite sprite;
     int id;
-    int casillaActual = -1;  // -1: en casa
+    int indiceTablero = -1;  // -1: en casa
     bool enMeta = false;
-    GameResources& resources;  // Referencia a recursos
+    bool seleccionada = false;
+    float radio;
+    GameResources& resources;
 
 public:
     FichaRoja(int id, const sf::Vector2f& posicionInicial, GameResources& res);
-    virtual ~FichaRoja() = default;
 
     void mover(const sf::Vector2f& nuevaPosicion);
-    virtual void dibujar(sf::RenderWindow& ventana) const;
+    void moverEnTablero(int nuevoIndice, const std::array<sf::Vector2f, 40>& positions);
+    void dibujar(sf::RenderWindow& ventana) const;
     bool puedeMoverse(int valorDado) const;
-
-    int getCasillaActual() const { return casillaActual; }
+    bool contienePunto(const sf::Vector2i& punto) const;
+    void seleccionar();
+    void deseleccionar();
+    bool estaSeleccionada() const { return seleccionada; }
+    int getIndiceTablero() const { return indiceTablero; }
+    void setIndiceTablero(int indice) { indiceTablero = indice; }
     bool estaEnMeta() const { return enMeta; }
 };

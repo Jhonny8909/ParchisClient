@@ -22,6 +22,8 @@ private:
     GameResources resources;
     sf::RenderWindow& window;
     sf::TcpSocket& socket;
+    int fichaSeleccionada;  
+    bool dadoLanzado;       
 
     int dadoValue; // Valor del dado lanzado
    
