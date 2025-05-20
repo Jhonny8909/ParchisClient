@@ -12,40 +12,28 @@ public:
     void draw(sf::RenderWindow& window) override;
     std::string nextState() const override;
 
-    std::vector<sf::Sprite> sprites;  // Cambiado de 'sprite' a 'sprites' por convención
-
 private:
-
-    std::vector<std::unique_ptr<sf::TcpSocket>> peerSockets;
-    bool isHost = false;
-    std::string myIP;
-
-    enum class LobbyState { Idle, Waiting, InGame };
-    LobbyState currentState = LobbyState::Idle;
-
-    void establishP2PConnections(const std::vector<std::string>& peerIPs);
-    void handleGameStart(sf::Packet& packet);
-
     sf::RenderWindow& window;
     LobbyResources resources;
     sf::TcpSocket& socket;
 
-    // Variables de estado
-    std::string codigoCrear;
-    std::string codigoUnir;
-    bool inputCrearActivo = false;
-    bool inputUnirActivo = false;
-    bool crearClick = false;
-    bool unirClick = false;
-    bool showHover = false;
+    std::vector<sf::Sprite> sprites;
+    sf::RectangleShape createBox;
+    sf::RectangleShape joinBox;
+    sf::RectangleShape createButton;
+    sf::RectangleShape joinButton;
 
-    std::string NextWindow;
-
-    // Elementos UI
-    sf::RectangleShape box1, box2, boton1, boton2;
-    sf::FloatRect textArea1, textArea2, botonArea1, botonArea2;
+    std::string createCode;
+    std::string joinCode;
+    bool createActive = false;
+    bool joinActive = false;
+    bool waitingForResponse = false;
+    bool gameStarting = false;
+    std::string nextWindow;
 
     void handleEvents();
+    void sendLobbyPacket(const std::string& action, const std::string& code);
+    void checkServerResponse();
+    void handleTextInput(std::string& code, uint32_t unicode, sf::Text& displayText);
     void render();
-
 };

@@ -1,22 +1,14 @@
-﻿  Main.cpp
+﻿  PantallaLobby.cpp
 C:\Users\jonat\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: se ha utilizado una interfaz no de DLL class 'std::runtime_error' como base para la interfaz DLL class 'sf::Exception'
-  (compilando archivo de origen "Main.cpp")
-      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\stdexcept(100,30):
-      vea la declaración de 'std::runtime_error'
-      C:\Users\jonat\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,23):
-      vea la declaración de 'sf::Exception'
-  
-  PantallaJuego.cpp
-C:\Users\jonat\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,47): warning C4275: se ha utilizado una interfaz no de DLL class 'std::runtime_error' como base para la interfaz DLL class 'sf::Exception'
-  (compilando archivo de origen "PantallaJuego.cpp")
+  (compilando archivo de origen "PantallaLobby.cpp")
       C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\stdexcept(100,30):
       vea la declaración de 'std::runtime_error'
       C:\Users\jonat\source\repos\ParchisClient\Dependencies\include\SFML\System\Exception.hpp(41,23):
       vea la declaración de 'sf::Exception'
   
   Generando código
-  4 of 684 functions ( 0.6%) were compiled, the rest were copied from previous compilation.
+  8 of 666 functions ( 1.2%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    2 functions had inline decision re-evaluated but remain unchanged
+    10 functions had inline decision re-evaluated but remain unchanged
   Generación de código finalizada
   Parchis.vcxproj -> C:\Users\jonat\source\repos\ParchisClient\x64\Release\Parchis.exe

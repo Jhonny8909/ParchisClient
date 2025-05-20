@@ -1,68 +1,64 @@
 #include "PantallaJuego.h"
 #include "PantallaLobby.h"
-#include <iostream>
-#include "PantallaLogin.h" // si la implementas
+#include "PantallaLogin.h"
 #include <SFML/Graphics.hpp>
+#include <SFML/Network.hpp>
+#include <memory>
+#include <iostream>
 
-#define SERVER_PORT 55000
-const sf::IpAddress SERVER_IP = sf::IpAddress(192,168,0,22);
-
-
-
+constexpr unsigned short SERVER_PORT = 55000;
+const sf::IpAddress SERVER_IP = sf::IpAddress(127,0,0,1);
 
 enum class Estado { Login, Lobby, Juego, Ninguno };
 
-std::unique_ptr<Pantalla> crearPantalla(Estado estado, sf::RenderWindow& window, sf::TcpSocket& socket) {
+std::unique_ptr<Pantalla> crearPantalla(
+    Estado estado,
+    sf::RenderWindow& window,
+    sf::TcpSocket& socket
+) {
     switch (estado) {
-    case Estado::Lobby: return std::make_unique<LobbyScreen>(window, socket);
-    case Estado::Juego: return std::make_unique<PantallaJuego>(window, socket);
-    case Estado::Login: return std::make_unique<PantallaLogin>(window, socket);
-    default: return nullptr;
+    case Estado::Login:
+        return std::make_unique<PantallaLogin>(window, socket);
+    case Estado::Lobby:
+        return std::make_unique<LobbyScreen>(window, socket);
+    case Estado::Juego:
+        return std::make_unique<PantallaJuego>(window, socket);
+    default:
+        return nullptr;
     }
 }
 
 int main() {
     sf::RenderWindow window(sf::VideoMode({ 1920, 1080 }), "Parchis Online");
-
     sf::TcpSocket socket;
 
+    // Conexión corregida para SFML 3.0.0
     if (socket.connect(SERVER_IP, SERVER_PORT) != sf::Socket::Status::Done) {
         std::cerr << "Error al conectar al servidor" << std::endl;
         return -1;
     }
+    socket.setBlocking(false);
 
-    std::cout << "Conectado al servidor" << std::endl;
-
+    Estado estadoActual = Estado::Login;
+    auto pantalla = crearPantalla(estadoActual, window, socket);
 
     sf::Clock clock;
-
-    Estado estadoActual = Estado::Juego
-;
-    std::unique_ptr<Pantalla> pantalla = crearPantalla(estadoActual, window, socket);
-
     while (window.isOpen()) {
-
         float dt = clock.restart().asSeconds();
 
         pantalla->handleInput(window);
-        pantalla->update(dt);
+        pantalla->update(dt);  // Aquí se procesa la respuesta
 
         window.clear();
         pantalla->draw(window);
         window.display();
 
+        std::string siguienteEstado = pantalla->nextState();
+        if (!siguienteEstado.empty()) {
+            estadoActual = (siguienteEstado == "Login") ? Estado::Login :
+                (siguienteEstado == "Lobby") ? Estado::Lobby :
+                Estado::Juego;
 
-        std::string siguiente = pantalla->nextState();
-        if (siguiente == "Juego") {
-            estadoActual = Estado::Juego;
-            pantalla = crearPantalla(estadoActual, window,socket);
-        }
-        else if (siguiente == "Lobby") {
-            estadoActual = Estado::Lobby;
-            pantalla = crearPantalla(estadoActual, window, socket);
-        }
-        else if (siguiente == "Login") {
-            estadoActual = Estado::Login;
             pantalla = crearPantalla(estadoActual, window, socket);
         }
     }
