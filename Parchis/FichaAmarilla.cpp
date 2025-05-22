@@ -1,7 +1,7 @@
-#include "FichaRoja.h"
+#include "FichaAmarilla.h"
 #include <cmath>
 
-FichaRoja::FichaRoja(int id, const sf::Vector2f& posicionInicial, GameResources& res)
+FichaAmarilla::FichaAmarilla(int id, const sf::Vector2f& posicionInicial, GameResources& res)
     : id(id), resources(res), sprite(res.fichaRoja) {
     sf::FloatRect bounds = sprite.getLocalBounds();
     sprite.setOrigin(bounds.size / 2.f);
@@ -11,21 +11,21 @@ FichaRoja::FichaRoja(int id, const sf::Vector2f& posicionInicial, GameResources&
 }
 
 
-void FichaRoja::moverEnTablero(int nuevoIndice, const std::array<sf::Vector2f, 40>& positions) {
+void FichaAmarilla::moverEnTablero(int nuevoIndice, const std::array<sf::Vector2f, 40>& positions) {
     if (nuevoIndice >= 0 && nuevoIndice < static_cast<int>(positions.size())) {
         indiceTablero = nuevoIndice;
         sprite.setPosition(positions[static_cast<size_t>(nuevoIndice)]);
     }
 }
 
-bool FichaRoja::contienePunto(const sf::Vector2i& punto) const {
+bool FichaAmarilla::contienePunto(const sf::Vector2i& punto) const {
     sf::Vector2f centro = sprite.getPosition();
     float distancia = std::hypot(punto.x - centro.x, punto.y - centro.y);
     return distancia <= radio;
 }
 
 
-void FichaRoja::dibujar(sf::RenderWindow& ventana, bool resaltar) const {
+void FichaAmarilla::dibujar(sf::RenderWindow& ventana, bool resaltar) const {
     // Necesitamos crear una copia modificable del sprite
     sf::Sprite spriteTemp = sprite; // Copia del sprite
 
@@ -45,35 +45,35 @@ void FichaRoja::dibujar(sf::RenderWindow& ventana, bool resaltar) const {
     }
 }
 
-void FichaRoja::mover(const sf::Vector2f& nuevaPosicion) {
+void FichaAmarilla::mover(const sf::Vector2f& nuevaPosicion) {
     sprite.setPosition(nuevaPosicion);
     // Aquí puedes añadir lógica adicional para actualizar casillaActual
 }
 
-bool FichaRoja::puedeMoverse(int valorDado) const {
+bool FichaAmarilla::puedeMoverse(int valorDado) const {
     // Implementa la lógica de movimiento según las reglas del juego
     return true;  // Cambia esto según tus reglas
 }
 
-void FichaRoja::seleccionar() {
+void FichaAmarilla::seleccionar() {
     seleccionada = true;
     sprite.setColor(sf::Color::White); // Más brillante cuando está seleccionada
 }
 
-void FichaRoja::deseleccionar() {
+void FichaAmarilla::deseleccionar() {
     seleccionada = false;
     sprite.setColor(colorOriginal); // Volver al color original
 }
 
-bool FichaRoja::contiene(const sf::Vector2f& punto) const {
+bool FichaAmarilla::contiene(const sf::Vector2f& punto) const {
     return sprite.getGlobalBounds().contains(punto);
 }
 
-void FichaRoja::setPosicionesTablero(const std::array<sf::Vector2f, 44>& posiciones) {
+void FichaAmarilla::setPosicionesTablero(const std::array<sf::Vector2f, 44>& posiciones) {
     // Podemos usar esto si necesitamos almacenar las posiciones localmente
 }
 
-void FichaRoja::avanzarUnaPosicion(const std::array<sf::Vector2f, 44>& posicionesTablero) {
+void FichaAmarilla::avanzarUnaPosicion(const std::array<sf::Vector2f, 44>& posicionesTablero) {
     if (indiceTablero < static_cast<int>(posicionesTablero.size()) - 1) {
         indiceTablero++;
         sprite.setPosition(posicionesTablero[static_cast<size_t>(indiceTablero)]);

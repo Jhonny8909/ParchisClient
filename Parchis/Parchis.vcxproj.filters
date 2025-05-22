@@ -51,6 +51,18 @@
     <ClInclude Include="Tablero.h">
       <Filter>Archivos de recursos\Core</Filter>
     </ClInclude>
+    <ClInclude Include="FichaAmarilla.h">
+      <Filter>Archivos de recursos\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="FichaVerde.h">
+      <Filter>Archivos de recursos\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="FichaAzul.h">
+      <Filter>Archivos de recursos\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTypes.h">
+      <Filter>Archivos de recursos\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -75,6 +87,15 @@
       <Filter>Archivos de recursos\Ventanas</Filter>
     </ClCompile>
     <ClCompile Include="FichaRoja.cpp">
+      <Filter>Archivos de recursos\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="FichaAmarilla.cpp">
+      <Filter>Archivos de recursos\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="FichaVerde.cpp">
+      <Filter>Archivos de recursos\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="FichaAzul.cpp">
       <Filter>Archivos de recursos\Core</Filter>
     </ClCompile>
   </ItemGroup>

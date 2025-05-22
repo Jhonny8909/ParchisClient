@@ -1,11 +1,10 @@
-// FichaRoja.h
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <array>
 #include "resources.h"
 #include <iostream>
 
-class FichaRoja {
+class FichaVerde {
 protected:
     sf::Sprite sprite;
     int id;
@@ -17,7 +16,7 @@ protected:
     sf::Color colorOriginal; // Nuevo: para guardar el color base
 
 public:
-    FichaRoja(int id, const sf::Vector2f& posicionInicial, GameResources& res);
+    FichaVerde(int id, const sf::Vector2f& posicionInicial, GameResources& res);
 
     void mover(const sf::Vector2f& nuevaPosicion);
     void moverEnTablero(int nuevoIndice, const std::array<sf::Vector2f, 40>& positions);

@@ -14,7 +14,8 @@ enum class Estado { Login, Lobby, Juego, Ninguno };
 std::unique_ptr<Pantalla> crearPantalla(
     Estado estado,
     sf::RenderWindow& window,
-    sf::TcpSocket& socket
+    sf::TcpSocket& socket,
+    ColorJugador color = ColorJugador::NINGUNO // Nuevo parámetro con valor por defecto
 ) {
     switch (estado) {
     case Estado::Login:
@@ -22,7 +23,7 @@ std::unique_ptr<Pantalla> crearPantalla(
     case Estado::Lobby:
         return std::make_unique<LobbyScreen>(window, socket);
     case Estado::Juego:
-        return std::make_unique<PantallaJuego>(window, socket);
+        return std::make_unique<PantallaJuego>(window, socket, color);
     default:
         return nullptr;
     }
@@ -37,6 +38,7 @@ int main() {
         std::cerr << "Error al conectar al servidor" << std::endl;
         return -1;
     }
+
     socket.setBlocking(false);
 
     Estado estadoActual = Estado::Login;
@@ -45,6 +47,24 @@ int main() {
     sf::Clock clock;
     while (window.isOpen()) {
         float dt = clock.restart().asSeconds();
+
+        // Procesar mensajes de red ANTES de handleInput
+        sf::Packet packet;
+        while (socket.receive(packet) == sf::Socket::Status::Done) {
+            std::string tipo;
+            if (packet >> tipo) {
+                if (tipo == "LOBBY_UPDATE") {
+                    int numJugadores, colorInt;
+                    if (packet >> numJugadores >> colorInt) {
+                        ColorJugador colorJugador = static_cast<ColorJugador>(colorInt);
+                        // Si recibimos color y estamos en juego, actualizar pantalla
+                        if (estadoActual == Estado::Juego) {
+                            pantalla = std::make_unique<PantallaJuego>(window, socket, colorJugador);
+                        }
+                    }
+                }
+            }
+        }
 
         pantalla->handleInput(window);
         pantalla->update(dt);
@@ -55,11 +75,9 @@ int main() {
 
         std::string siguienteEstado = pantalla->nextState();
         if (!siguienteEstado.empty()) {
-            std::cout << "Cambiando a estado: " << siguienteEstado << std::endl;
             estadoActual = (siguienteEstado == "Login") ? Estado::Login :
                 (siguienteEstado == "Lobby") ? Estado::Lobby :
                 Estado::Juego;
-
             pantalla = crearPantalla(estadoActual, window, socket);
         }
     }

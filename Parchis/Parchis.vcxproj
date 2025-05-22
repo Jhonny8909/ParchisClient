@@ -19,7 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FichaAmarilla.h" />
+    <ClInclude Include="FichaAzul.h" />
     <ClInclude Include="FichaRoja.h" />
+    <ClInclude Include="FichaVerde.h" />
+    <ClInclude Include="GameTypes.h" />
     <ClInclude Include="LobbyResources.h" />
     <ClInclude Include="LoginResources.h" />
     <ClInclude Include="Pantalla.h" />
@@ -30,7 +34,10 @@
     <ClInclude Include="Tablero.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FichaAmarilla.cpp" />
+    <ClCompile Include="FichaAzul.cpp" />
     <ClCompile Include="FichaRoja.cpp" />
+    <ClCompile Include="FichaVerde.cpp" />
     <ClCompile Include="LobbyResources.cpp" />
     <ClCompile Include="LoginResources.cpp" />
     <ClCompile Include="Main.cpp" />

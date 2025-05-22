@@ -16,6 +16,5 @@ bool GameResources::loadAllResources() {
 	success &= dado4.loadFromFile("Dado/dado_0002_lado_04.png");
 	success &= dado5.loadFromFile("Dado/dado_0001_lado_05.png");
 	success &= dado6.loadFromFile("Dado/dado_0000_lado_06.png");
-    std::cout << "Tamaño de dado1: " << dado1.getSize().x << "x" << dado1.getSize().y << std::endl;
     return success;
 }
