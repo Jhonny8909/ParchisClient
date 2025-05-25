@@ -173,28 +173,16 @@ void LobbyScreen::update(float dt) {
 
 void LobbyScreen::checkServerResponse() {
     sf::Packet packet;
-    sf::Socket::Status status;
-
-    // Cambiar temporalmente a modo bloqueante con timeout
-    socket.setBlocking(true);
-    sf::SocketSelector selector;
-    selector.add(socket);
-
-    if (selector.wait(sf::milliseconds(100))) { // Espera 100ms
-        status = socket.receive(packet);
-        if (status == sf::Socket::Status::Done) {
-            std::string packetType;
-            if (packet >> packetType) {
-                auto handler = networkHandlers.find(packetType);
-                if (handler != networkHandlers.end()) {
-                    handler->second(packet);
-                }
+    while (socket.receive(packet) == sf::Socket::Status::Done) {
+        std::string packetType;
+        if (packet >> packetType) {
+            auto handler = networkHandlers.find(packetType);
+            if (handler != networkHandlers.end()) {
+                handler->second(packet);
             }
         }
     }
-    socket.setBlocking(false);
 }
-
 void LobbyScreen::render() {
     window.clear();
 

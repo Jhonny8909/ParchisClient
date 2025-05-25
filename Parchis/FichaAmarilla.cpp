@@ -2,7 +2,7 @@
 #include <cmath>
 
 FichaAmarilla::FichaAmarilla(int id, const sf::Vector2f& posicionInicial, GameResources& res)
-    : id(id), resources(res), sprite(res.fichaRoja) {
+    : id(id), resources(res), sprite(res.fichaAmarilla) {
     sf::FloatRect bounds = sprite.getLocalBounds();
     sprite.setOrigin(bounds.size / 2.f);
     sprite.setPosition(posicionInicial);

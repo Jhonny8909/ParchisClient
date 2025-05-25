@@ -6,21 +6,25 @@
 using namespace std;
 using namespace sf;
 
+PantallaJuego::PantallaJuego(sf::RenderWindow& mainWindow,sf::TcpSocket& socket,int colorJugador,const std::string& codigoSala)
+	: window(mainWindow),socket(socket),esMiTurno(false),codigoLobby(codigoSala)  // Guardamos el código en miembro de clase
+{
+	miColor = static_cast<ColorJugador>(colorJugador);
 
-PantallaJuego::PantallaJuego(sf::RenderWindow& mainWindow, sf::TcpSocket& socket, ColorJugador colorAsignado)
-	: window(mainWindow), socket(socket), miColor(colorAsignado), esMiTurno(false) {
+	std::cout << "Juego iniciado - Sala: " << codigoLobby
+		<< ", Color: " << static_cast<int>(miColor) << std::endl;
 
-
-	std::string colorStr;
+	std::cout << "Color asignado: ";
 	switch (miColor) {
-	case ColorJugador::ROJO: colorStr = "ROJO"; break;
-	case ColorJugador::AMARILLO: colorStr = "AMARILLO"; break;
-	case ColorJugador::VERDE: colorStr = "VERDE"; break;
-	case ColorJugador::AZUL: colorStr = "AZUL"; break;
-	default: colorStr = "NINGUNO";
+	case ColorJugador::ROJO: std::cout << "ROJO"; break;
+	case ColorJugador::AMARILLO: std::cout << "AMARILLO"; break;
+	case ColorJugador::VERDE: std::cout << "VERDE"; break;
+	case ColorJugador::AZUL: std::cout << "AZUL"; break;
+	default: std::cout << "NINGUNO";
 	}
-	std::cout << "Color asignado: " << colorStr << std::endl;
+	std::cout << std::endl;
 
+	// Resto de la inicialización (sin cambios)
 	std::srand(static_cast<unsigned>(std::time(nullptr)));
 	if (!resources.loadAllResources()) {
 		std::cerr << "Error al cargar recursos del juego" << std::endl;
@@ -228,6 +232,24 @@ void PantallaJuego::avanzarFichaSeleccionada() {
 			fichasRojas[fichaSeleccionada].avanzarUnaPosicion(board.positions);
 		}
 	}
+
+	if (fichaSeleccionada >= 0) {
+		if (fichaSeleccionada < 4) { // Fichas Azules
+			fichasAzules[fichaSeleccionada].avanzarUnaPosicion(board.positions);
+		}
+	}
+	
+	if (fichaSeleccionada >= 0) {
+		if (fichaSeleccionada < 4) { // Fichas Verdes
+			fichasVerdes[fichaSeleccionada].avanzarUnaPosicion(board.positions);
+		}
+	}
+
+	if (fichaSeleccionada >= 0) {
+		if (fichaSeleccionada < 4) { // Fichas Amarillas
+			fichasAmarillas[fichaSeleccionada].avanzarUnaPosicion(board.positions);
+		}
+	}
 }
 
 void PantallaJuego::update(float dt) {
@@ -240,15 +262,21 @@ void PantallaJuego::update(float dt) {
 }
 
 void PantallaJuego::procesarPaquetesRed() {
-	// Procesar mensajes de red
 	sf::Packet packet;
 	while (socket.receive(packet) == sf::Socket::Status::Done) {
 		std::string tipo;
 		if (packet >> tipo) {
-			if (tipo == "TURNO_ACTUAL") {
-				int jugadorActual;
-				if (packet >> jugadorActual) {
-					esMiTurno = (jugadorActual == static_cast<int>(miColor));
+			if (tipo == "RESPUESTA_TURNO") {
+				if (packet >> esMiTurno) {
+					std::cout << "[TURNO] Respuesta del servidor. Es mi turno: "
+						<< (esMiTurno ? "SI" : "NO") << std::endl;
+				}
+			}
+			else if (tipo == "CAMBIAR_TURNO") {
+				// El servidor notifica cuando cambia el turno
+				if (packet >> esMiTurno) {
+					std::cout << "[TURNO] Cambio de turno. Es mi turno: "
+						<< (esMiTurno ? "SI" : "NO") << std::endl;
 				}
 			}
 		}
@@ -263,23 +291,36 @@ void PantallaJuego::render() {
 		window.draw(sprite);
 	}
 
-	// Dibujar todas las fichas pero resaltar solo las mías
-	for (auto& ficha : fichasRojas) {
-		ficha.dibujar(window, miColor == ColorJugador::ROJO);
-	}
-	for (auto& ficha : fichasAmarillas) {
-		ficha.dibujar(window, miColor == ColorJugador::AMARILLO);
-	}
-	for (auto& ficha : fichasAzules) {
-		ficha.dibujar(window, miColor == ColorJugador::AZUL);
-	}
-	for (auto& ficha : fichasVerdes) {
-		ficha.dibujar(window, miColor == ColorJugador::VERDE);
+	// Dibujar solo las fichas del color del jugador actual
+	switch (miColor) {
+	case ColorJugador::ROJO:
+		for (auto& ficha : fichasRojas) {
+			ficha.dibujar(window, true); // Resaltar las propias
+		}
+		break;
+	case ColorJugador::AMARILLO:
+		for (auto& ficha : fichasAmarillas) {
+			ficha.dibujar(window, true);
+		}
+		break;
+	case ColorJugador::VERDE:
+		for (auto& ficha : fichasVerdes) {
+			ficha.dibujar(window, true);
+		}
+		break;
+	case ColorJugador::AZUL:
+		for (auto& ficha : fichasAzules) {
+			ficha.dibujar(window, true);
+		}
+		break;
 	}
 
 	// Dibujar dado
 	if (dadoValue >= 1 && dadoValue <= 6) {
 		window.draw(Dado[dadoValue - 1]);
+	}
+	else {
+		window.draw(Dado[0]);
 	}
 }
 
@@ -288,9 +329,26 @@ void PantallaJuego::draw(sf::RenderWindow& window) {
 }
 
 void PantallaJuego::LanzarDado() {
-	if (!enAnimacionDado) {
-		iniciarAnimacionDado();
+	if (!esMiTurno) {
+		std::cout << "No puedes lanzar el dado - No es tu turno!" << std::endl;
+		return;
 	}
+
+	if (enAnimacionDado || dadoLanzado) {
+		std::cout << "El dado ya está en movimiento o fue lanzado" << std::endl;
+		return;
+	}
+
+	// Enviar solicitud al servidor
+	sf::Packet packet;
+	packet << "TIRAR_DADO";
+	if (socket.send(packet) != sf::Socket::Status::Done) {
+		std::cerr << "Error al enviar TIRAR_DADO" << std::endl;
+		return;
+	}
+
+	std::cout << "Solicitud de lanzamiento enviada" << std::endl;
+	iniciarAnimacionDado();
 }
 
 std::string PantallaJuego::nextState() const {
@@ -334,3 +392,21 @@ void PantallaJuego::actualizarAnimacionDado() {
 		}
 	}
 }
+
+void PantallaJuego::procesarPaqueteExterno(sf::Packet& packet) {
+	std::string tipo;
+	if (packet >> tipo) {
+		if (tipo == "RESPUESTA_TURNO") {
+			if (packet >> esMiTurno) {
+				std::cout << "[TURNO] Respuesta del servidor: "
+					<< (esMiTurno ? "ES MI TURNO" : "NO ES MI TURNO") << std::endl;
+			}
+		}
+		else if (tipo == "CAMBIAR_TURNO") {
+			if (packet >> esMiTurno) {
+				std::cout << "[TURNO] Cambio notificado: "
+					<< (esMiTurno ? "AHORA ES MI TURNO" : "YA NO ES MI TURNO") << std::endl;
+			}
+		}
+	}
+}	

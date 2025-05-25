@@ -12,7 +12,7 @@
 
 class PantallaJuego : public Pantalla {
 public:
-    explicit PantallaJuego(sf::RenderWindow& mainWindow, sf::TcpSocket& socket, ColorJugador colorAsignado);
+    explicit PantallaJuego(sf::RenderWindow& mainWindow,sf::TcpSocket& socket,int colorJugador,const std::string& codigoSala);
     void handleInput(sf::RenderWindow& window) override;
     void update(float dt) override;
     void draw(sf::RenderWindow& window) override;
@@ -24,9 +24,10 @@ public:
 	std::vector<FichaAzul> fichasAzules; // Vector para almacenar las fichas
 	std::vector<FichaVerde> fichasVerdes; // Vector para almacenar las fichas
     std::vector<FichaAmarilla> fichasAmarillas; // Vector para almacenar las fichas
+    void procesarPaqueteExterno(sf::Packet& packet);
     
 private:
-
+    std::string codigoLobby;
     ColorJugador miColor;  // Color asignado por el servidor
     bool esMiTurno;
 
