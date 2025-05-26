@@ -6,6 +6,9 @@
 #include <memory>
 #include <iostream>
 
+int colorJugador = -1;
+std::string codigoSala;
+
 constexpr unsigned short SERVER_PORT = 55000;
 const sf::IpAddress SERVER_IP = sf::IpAddress(127,0,0,1); // Cambiado a formato string
 
@@ -62,19 +65,32 @@ int main() {
                 if (tipo == "GAME_START") {
                     int colorJugador;
                     std::string codigoSala;
-                    if (packet >> colorJugador >> codigoSala) {
-                        // Validar el color recibido
-                        if (colorJugador < 0 || colorJugador > 3) {
-                            std::cerr << "Color inválido recibido: " << colorJugador << std::endl;
-                            colorJugador = 4; // NINGUNO
+                    bool miTurno;
+                    if (packet >> colorJugador >> codigoSala >> miTurno) {
+                        std::cout << "[CLIENT] Game start recibido - Color: " << colorJugador
+                            << ", Sala: " << codigoSala
+                            << ", Turno: " << miTurno << std::endl;
+
+                        // Actualizar variables globales
+                        ::colorJugador = colorJugador;
+                        ::codigoSala = codigoSala;
+
+                        while (socket.receive(packet) == sf::Socket::Status::Done) {
+                            packet.clear(); // Limpiar paquetes residuales
                         }
 
                         estadoActual = Estado::Juego;
-                        pantalla = std::make_unique<PantallaJuego>(window, socket, colorJugador, codigoSala);
+                        pantalla = crearPantalla(estadoActual, window, socket, colorJugador, codigoSala);
+
+                        // Notificar el turno directamente
+                        if (auto juego = dynamic_cast<PantallaJuego*>(pantalla.get())) {
+                            juego->setEsMiTurno(miTurno);
+                        }
                     }
                 }
-                else if (pantalla != nullptr) {
-                    dynamic_cast<PantallaJuego*>(pantalla.get())->procesarPaqueteExterno(packet);
+                else if (auto juego = dynamic_cast<PantallaJuego*>(pantalla.get())) {
+                    // Pasar el paquete a la pantalla de juego
+                    juego->procesarPaqueteRed(packet);
                 }
             }
             packet.clear();
@@ -92,8 +108,9 @@ int main() {
             estadoActual = (siguienteEstado == "Login") ? Estado::Login :
                 (siguienteEstado == "Lobby") ? Estado::Lobby :
                 Estado::Juego;
-            // Usar el constructor sin paquete
-            pantalla = crearPantalla(estadoActual, window, socket, 0, "");
+
+            pantalla = crearPantalla(estadoActual, window, socket,
+                colorJugador, codigoSala); // Pasa los valores actuales
         }
     } // <-- Esta llave cierra el while (window.isOpen())
     return 0;

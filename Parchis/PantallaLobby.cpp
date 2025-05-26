@@ -3,6 +3,7 @@
 
 LobbyScreen::LobbyScreen(sf::RenderWindow& mainWindow, sf::TcpSocket& socket)
     : window(mainWindow), socket(socket) {
+    socket.setBlocking(false);
     if (!resources.loadAll()) {
         std::cerr << "[ERROR] Failed to load resources" << std::endl;
         return;
@@ -142,25 +143,21 @@ void LobbyScreen::handleTextInput(std::string& code, uint32_t unicode, sf::Text&
 
 void LobbyScreen::sendLobbyPacket(const std::string& action, const std::string& code) {
     sf::Packet packet;
-    packet << "LOBBY" << action << code; // Asegúrate que los tipos coincidan
+    packet << "LOBBY" << action << code;
 
-    // Debug: Mostrar lo que se está enviando
-    std::cout << "[CLIENTE] Enviando paquete LOBBY: "
-        << "Acción: " << action << ", Código: " << code << std::endl;
+    // Guardar el estado original del socket
+    bool wasBlocking = socket.isBlocking();
 
-    // Cambio temporal a modo bloqueante para el envío
+    // Enviar en modo bloqueante
     socket.setBlocking(true);
     sf::Socket::Status status = socket.send(packet);
-    socket.setBlocking(false);
+
+    // Restaurar el estado original
+    socket.setBlocking(wasBlocking);  // O usar false si prefieres no-bloqueante siempre
 
     if (status != sf::Socket::Status::Done) {
-        std::cerr << "[CLIENTE] Error al enviar paquete LOBBY: "
-            << static_cast<int>(status) << std::endl;
+        std::cerr << "[CLIENTE] Error al enviar paquete LOBBY: " << std::endl;
     }
-    else {
-        std::cout << "[CLIENTE] Paquete LOBBY enviado correctamente" << std::endl;
-    }
-
     waitingForResponse = true;
 }
 
@@ -173,7 +170,13 @@ void LobbyScreen::update(float dt) {
 
 void LobbyScreen::checkServerResponse() {
     sf::Packet packet;
-    while (socket.receive(packet) == sf::Socket::Status::Done) {
+    sf::Socket::Status status;
+
+    // Usar receive en modo no-bloqueante
+    socket.setBlocking(false);
+    status = socket.receive(packet);
+
+    if (status == sf::Socket::Status::Done) {
         std::string packetType;
         if (packet >> packetType) {
             auto handler = networkHandlers.find(packetType);
@@ -181,6 +184,12 @@ void LobbyScreen::checkServerResponse() {
                 handler->second(packet);
             }
         }
+    }
+    else if (status == sf::Socket::Status::NotReady) {
+        // No hay datos disponibles (opcional: agregar un retraso pequeño)
+    }
+    else {
+        std::cerr << "[CLIENTE] Error al recibir: "  << std::endl;
     }
 }
 void LobbyScreen::render() {

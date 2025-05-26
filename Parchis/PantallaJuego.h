@@ -24,12 +24,14 @@ public:
 	std::vector<FichaAzul> fichasAzules; // Vector para almacenar las fichas
 	std::vector<FichaVerde> fichasVerdes; // Vector para almacenar las fichas
     std::vector<FichaAmarilla> fichasAmarillas; // Vector para almacenar las fichas
-    void procesarPaqueteExterno(sf::Packet& packet);
-    
+    void setEsMiTurno(bool esMiTurno) { this->esMiTurno = esMiTurno; }
+    void procesarPaqueteRed(sf::Packet& packet);
+
 private:
     std::string codigoLobby;
     ColorJugador miColor;  // Color asignado por el servidor
-    bool esMiTurno;
+    bool esMiTurno = false;
+    sf::Clock consultaTurnoClock;
 
     GameResources resources;
     sf::RenderWindow& window;
@@ -57,6 +59,10 @@ private:
 
     void actualizarAnimacionDado();
     void iniciarAnimacionDado();
-    void detenerAnimacionDado();
-    void procesarPaquetesRed();
+    void detenerAnimacionDado(int valorFinal); // Cambia la firma
+
+    void handleTurnEvents(const sf::Event& event);
+    sf::Vector2f getMousePosition() const;
+    void MoverFicha(int fichaId, int nuevaPos);
+    void finalizarTurno();
 };
